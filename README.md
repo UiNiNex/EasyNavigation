@@ -1,6 +1,8 @@
 # EasyNavigition
 几行代码实现ViewPager+Fragment底部导航（带红点消息提示）
 
+![image](https://github.com/forvv231/EasyNavigition/master/screenshot/pre1.gif)
+
 Add it in your root build.gradle at the end of repositories:
 
 	allprojects {
