@@ -92,7 +92,7 @@ public class NavigitionBar extends LinearLayout {
     private ViewPager mViewPager;
     //private GestureDetector detector;
 
-    private Techniques Anim = Techniques.ZoomIn;
+    private Techniques anim = null;
 
     public NavigitionBar(Context context) {
         super(context);
@@ -145,7 +145,7 @@ public class NavigitionBar extends LinearLayout {
             hintPointLeft = attributes.getDimension(R.styleable.NavigitionBar_hint_point_left, SmallUtil.dip2px(context, 0));
             msgPointLeft = attributes.getDimension(R.styleable.NavigitionBar_msg_point_left, -SmallUtil.dip2px(context, 5));
             msgPointTextSize = attributes.getDimension(R.styleable.NavigitionBar_msg_point_textsize, SmallUtil.sp2px(context, 9));
-            tabTextTop = attributes.getDimension(R.styleable.NavigitionBar_tab_text_top,SmallUtil.dip2px(context,2));
+            tabTextTop = attributes.getDimension(R.styleable.NavigitionBar_tab_text_top, SmallUtil.dip2px(context, 2));
 
             lineHeight = attributes.getDimension(R.styleable.NavigitionBar_line_height, 1);
             lineColor = attributes.getColor(R.styleable.NavigitionBar_line_color, 0xcccccccc);
@@ -172,7 +172,7 @@ public class NavigitionBar extends LinearLayout {
     }
 
     public void setData(String[] tabText, int[] normalIcon, int[] selectIcon, List<android.support.v4.app.Fragment> fragments,
-                        FragmentManager supportFragmentManager , Anim anim) {
+                        FragmentManager supportFragmentManager, Anim anim) {
 
         setData(tabText, normalIcon, selectIcon, fragments, supportFragmentManager, anim, null);
 
@@ -192,7 +192,8 @@ public class NavigitionBar extends LinearLayout {
             return;
 
         this.mOnItemClickListener = mOnItemClickListener;
-        this.Anim = anim.getYoyo();
+        if (anim != null)
+            this.anim = anim.getYoyo();
         tabCount = tabText.length;
 
         this.normalIcon = normalIcon;
@@ -326,8 +327,8 @@ public class NavigitionBar extends LinearLayout {
     public void selectPosition(int position) {
         for (int i = 0; i < imageViewList.size(); i++) {
             if (i == position) {
-                if (Anim != null)
-                    YoYo.with(Anim).duration(300).playOn(navigitionLayout.getChildAt(i));
+                if (anim != null)
+                    YoYo.with(anim).duration(300).playOn(navigitionLayout.getChildAt(i));
                 imageViewList.get(i).setImageResource(selectIcon[i]);
                 textViewList.get(i).setTextColor(selectTextColor);
             } else {
