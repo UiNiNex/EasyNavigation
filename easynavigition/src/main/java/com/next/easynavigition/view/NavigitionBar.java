@@ -12,8 +12,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.next.easynavigition.R;
 import com.next.easynavigition.adapter.ViewPagerAdapter;
+import com.next.easynavigition.constant.Anim;
 import com.next.easynavigition.utils.SmallUtil;
 
 import java.util.ArrayList;
@@ -43,29 +46,31 @@ public class NavigitionBar extends LinearLayout {
     //分割线颜色
     private int lineColor = 0xcccccc;
     //消息红点字体大小
-    private float msgPointTextSize = SmallUtil.sp2px(getContext(),9);
+    private float msgPointTextSize = SmallUtil.sp2px(getContext(), 9);
     //消息红点大小
-    private float msgPointSize = SmallUtil.dip2px(getContext(),18);
+    private float msgPointSize = SmallUtil.dip2px(getContext(), 18);
     //提示红点大小
-    private float hintPointSize = SmallUtil.dip2px(getContext(),6);
+    private float hintPointSize = SmallUtil.dip2px(getContext(), 6);
     //提示红点距Tab图标的距离
     private float hintPointLeft = 0;
     //消息红点距Tab图标的距离
-    private float msgPointLeft = -SmallUtil.dip2px(getContext(),5);
+    private float msgPointLeft = -SmallUtil.dip2px(getContext(), 5);
+    //Tab文字距Tab图标的距离
+    private float tabTextTop = SmallUtil.dip2px(getContext(), 2);
 
     private int doubleClickPositon = -1;
 
     //Tab图标大小
-    private float iconSize = SmallUtil.dip2px(getContext(),20);
+    private float iconSize = SmallUtil.dip2px(getContext(), 20);
 
     //红点距顶部的距离
-    private float redPointTop = SmallUtil.dip2px(getContext(),5);
+    private float redPointTop = SmallUtil.dip2px(getContext(), 5);
 
     //消息红点距顶部的距离
-    private float msgPointTop = SmallUtil.dip2px(getContext(),3);
+    private float msgPointTop = SmallUtil.dip2px(getContext(), 3);
 
     //Tab文字大小
-    private float tabTextSize = SmallUtil.sp2px(getContext(),10);
+    private float tabTextSize = SmallUtil.sp2px(getContext(), 10);
 
     //未选图片
     private int[] normalIcon;
@@ -74,7 +79,7 @@ public class NavigitionBar extends LinearLayout {
     private int[] selectIcon;
 
     //红点集合
-    private List<View> redPointList = new ArrayList<>();
+    private List<View> hintPointList = new ArrayList<>();
 
     //消息数量集合
     private List<TextView> msgPointList = new ArrayList<>();
@@ -86,6 +91,8 @@ public class NavigitionBar extends LinearLayout {
     private List<TextView> textViewList = new ArrayList<>();
     private ViewPager mViewPager;
     //private GestureDetector detector;
+
+    private Techniques Anim = Techniques.ZoomIn;
 
     public NavigitionBar(Context context) {
         super(context);
@@ -122,22 +129,25 @@ public class NavigitionBar extends LinearLayout {
 
         TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.NavigitionBar);
         if (attributes != null) {
-            float navigitionHeight = attributes.getDimensionPixelSize(R.styleable.NavigitionBar_navigition_height, SmallUtil.dip2px(context,48));
+            float navigitionHeight = attributes.getDimensionPixelSize(R.styleable.NavigitionBar_navigition_height, SmallUtil.dip2px(context, 48));
+            int navigitionBackground = attributes.getColor(R.styleable.NavigitionBar_navigition_background, 0xffffffff);
+            navigitionLayout.setBackgroundColor(navigitionBackground);
             LayoutParams params = (LayoutParams) navigitionLayout.getLayoutParams();
             params.height = (int) navigitionHeight;
             navigitionLayout.setLayoutParams(params);
 
-            tabTextSize = attributes.getDimension(R.styleable.NavigitionBar_tab_textsize, SmallUtil.sp2px(context,10));
-            redPointTop = attributes.getDimension(R.styleable.NavigitionBar_red_point_top, SmallUtil.dip2px(context,5));
-            msgPointTop = attributes.getDimension(R.styleable.NavigitionBar_msg_point_top, SmallUtil.dip2px(context,3));
-            iconSize = attributes.getDimension(R.styleable.NavigitionBar_tab_icon_size, SmallUtil.dip2px(context,20));
-            hintPointSize = attributes.getDimension(R.styleable.NavigitionBar_hint_point_size, SmallUtil.dip2px(context,6));
-            msgPointSize = attributes.getDimension(R.styleable.NavigitionBar_msg_point_size, SmallUtil.dip2px(context,18));
-            hintPointLeft = attributes.getDimension(R.styleable.NavigitionBar_hint_point_left, SmallUtil.dip2px(context,0));
-            msgPointLeft = attributes.getDimension(R.styleable.NavigitionBar_msg_point_left, -SmallUtil.dip2px(context,5));
-            msgPointTextSize = attributes.getDimension(R.styleable.NavigitionBar_msg_point_textsize, SmallUtil.sp2px(context,9));
+            tabTextSize = attributes.getDimension(R.styleable.NavigitionBar_tab_textsize, SmallUtil.sp2px(context, 10));
+            redPointTop = attributes.getDimension(R.styleable.NavigitionBar_red_point_top, SmallUtil.dip2px(context, 5));
+            msgPointTop = attributes.getDimension(R.styleable.NavigitionBar_msg_point_top, SmallUtil.dip2px(context, 3));
+            iconSize = attributes.getDimension(R.styleable.NavigitionBar_tab_icon_size, SmallUtil.dip2px(context, 20));
+            hintPointSize = attributes.getDimension(R.styleable.NavigitionBar_hint_point_size, SmallUtil.dip2px(context, 6));
+            msgPointSize = attributes.getDimension(R.styleable.NavigitionBar_msg_point_size, SmallUtil.dip2px(context, 18));
+            hintPointLeft = attributes.getDimension(R.styleable.NavigitionBar_hint_point_left, SmallUtil.dip2px(context, 0));
+            msgPointLeft = attributes.getDimension(R.styleable.NavigitionBar_msg_point_left, -SmallUtil.dip2px(context, 5));
+            msgPointTextSize = attributes.getDimension(R.styleable.NavigitionBar_msg_point_textsize, SmallUtil.sp2px(context, 9));
+            tabTextTop = attributes.getDimension(R.styleable.NavigitionBar_tab_text_top,SmallUtil.dip2px(context,2));
 
-            lineHeight = attributes.getDimension(R.styleable.NavigitionBar_line_height,1);
+            lineHeight = attributes.getDimension(R.styleable.NavigitionBar_line_height, 1);
             lineColor = attributes.getColor(R.styleable.NavigitionBar_line_color, 0xcccccccc);
             common_horizontal_line.setBackgroundColor(lineColor);
 
@@ -155,19 +165,41 @@ public class NavigitionBar extends LinearLayout {
     }
 
     public void setData(String[] tabText, int[] normalIcon, int[] selectIcon, List<android.support.v4.app.Fragment> fragments,
+                        FragmentManager supportFragmentManager) {
+
+        setData(tabText, normalIcon, selectIcon, fragments, supportFragmentManager, null, null);
+
+    }
+
+    public void setData(String[] tabText, int[] normalIcon, int[] selectIcon, List<android.support.v4.app.Fragment> fragments,
+                        FragmentManager supportFragmentManager , Anim anim) {
+
+        setData(tabText, normalIcon, selectIcon, fragments, supportFragmentManager, anim, null);
+
+    }
+
+    public void setData(String[] tabText, int[] normalIcon, int[] selectIcon, List<android.support.v4.app.Fragment> fragments,
                         FragmentManager supportFragmentManager, final OnItemClickListener mOnItemClickListener) {
+
+        setData(tabText, normalIcon, selectIcon, fragments, supportFragmentManager, null, mOnItemClickListener);
+
+    }
+
+
+    public void setData(String[] tabText, int[] normalIcon, int[] selectIcon, List<android.support.v4.app.Fragment> fragments,
+                        FragmentManager supportFragmentManager, Anim anim, final OnItemClickListener mOnItemClickListener) {
         if ((tabText.length != normalIcon.length) || (tabText.length != selectIcon.length) || (normalIcon.length != selectIcon.length))
             return;
 
         this.mOnItemClickListener = mOnItemClickListener;
-
+        this.Anim = anim.getYoyo();
         tabCount = tabText.length;
 
         this.normalIcon = normalIcon;
         this.selectIcon = selectIcon;
 
-        redPointList.clear();
-        redPointList.clear();
+        hintPointList.clear();
+        hintPointList.clear();
         imageViewList.clear();
         textViewList.clear();
 
@@ -219,7 +251,7 @@ public class NavigitionBar extends LinearLayout {
 
             //消息红点
             TextView msgPoint = itemView.findViewById(R.id.msg_point_tv);
-            msgPoint.setTextSize(SmallUtil.px2sp(getContext(),msgPointTextSize));
+            msgPoint.setTextSize(SmallUtil.px2sp(getContext(), msgPointTextSize));
             RelativeLayout.LayoutParams msgPointParams = (RelativeLayout.LayoutParams) msgPoint.getLayoutParams();
             msgPointParams.topMargin = (int) msgPointTop;
             msgPointParams.width = (int) msgPointSize;
@@ -228,7 +260,7 @@ public class NavigitionBar extends LinearLayout {
             msgPoint.setLayoutParams(msgPointParams);
 
 
-            redPointList.add(hintPoint);
+            hintPointList.add(hintPoint);
             msgPointList.add(msgPoint);
 
             imageViewList.add(icon);
@@ -237,14 +269,17 @@ public class NavigitionBar extends LinearLayout {
             itemView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(mOnItemClickListener!=null)
-                        mOnItemClickListener.onItemClickEvent(view,view.getId());
+                    if (mOnItemClickListener != null)
+                        mOnItemClickListener.onItemClickEvent(view, view.getId());
                     mViewPager.setCurrentItem(view.getId());
                 }
             });
 
+            LayoutParams textParams = (LayoutParams) text.getLayoutParams();
+            textParams.topMargin = (int) tabTextTop;
+            text.setLayoutParams(textParams);
             text.setText(tabText[i]);
-            text.setTextSize(SmallUtil.px2sp(getContext(),tabTextSize));
+            text.setTextSize(SmallUtil.px2sp(getContext(), tabTextSize));
 
             navigitionLayout.addView(itemView);
         }
@@ -291,6 +326,8 @@ public class NavigitionBar extends LinearLayout {
     public void selectPosition(int position) {
         for (int i = 0; i < imageViewList.size(); i++) {
             if (i == position) {
+                if (Anim != null)
+                    YoYo.with(Anim).duration(300).playOn(navigitionLayout.getChildAt(i));
                 imageViewList.get(i).setImageResource(selectIcon[i]);
                 textViewList.get(i).setTextColor(selectTextColor);
             } else {
@@ -300,19 +337,20 @@ public class NavigitionBar extends LinearLayout {
         }
     }
 
+
     /**
      * 设置是否显示小红点
      *
      * @param position 第几个tab
      * @param isShow   是否显示
      */
-    public void setRedPoint(int position, boolean isShow) {
-        if (redPointList == null || redPointList.size() < (position + 1))
+    public void setHintPoint(int position, boolean isShow) {
+        if (hintPointList == null || hintPointList.size() < (position + 1))
             return;
         if (isShow) {
-            redPointList.get(position).setVisibility(VISIBLE);
+            hintPointList.get(position).setVisibility(VISIBLE);
         } else {
-            redPointList.get(position).setVisibility(GONE);
+            hintPointList.get(position).setVisibility(GONE);
         }
     }
 
@@ -337,9 +375,9 @@ public class NavigitionBar extends LinearLayout {
         }
     }
 
-    public void clearAllRedPoint() {
-        for (int i = 0; i < redPointList.size(); i++) {
-            redPointList.get(i).setVisibility(GONE);
+    public void clearAllHintPoint() {
+        for (int i = 0; i < hintPointList.size(); i++) {
+            hintPointList.get(i).setVisibility(GONE);
         }
     }
 
@@ -350,7 +388,7 @@ public class NavigitionBar extends LinearLayout {
     }
 
 
-    interface OnItemClickListener {
+    public interface OnItemClickListener {
         void onItemClickEvent(View view, int position);
     }
 

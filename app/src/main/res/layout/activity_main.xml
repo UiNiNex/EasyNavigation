@@ -1,20 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <TextView
-        android:id="@+id/text"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintVertical_weight="1" />
 
     <Button
         android:id="@+id/bt01"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:text="展示消息红点提示"
         android:onClick="click01" />
 
     <Button
@@ -22,11 +16,15 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:onClick="clear"
+        android:text="清除消息红点提示"
         app:layout_constraintTop_toBottomOf="@id/bt01" />
 
     <com.next.easynavigition.view.NavigitionBar
         android:id="@+id/navigitionBar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></com.next.easynavigition.view.NavigitionBar>
+        android:layout_height="match_parent"
+        app:navigition_height="60dp">
+
+    </com.next.easynavigition.view.NavigitionBar>
 
 </android.support.constraint.ConstraintLayout>

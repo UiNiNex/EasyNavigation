@@ -4,8 +4,12 @@
     <declare-styleable name="NavigitionBar">
         <!--底部导航栏高度-->
         <attr name="navigition_height" format="dimension" />
+        <!--底部导航栏背景-->
+        <attr name="navigition_background" format="color" />
         <!--Tab字体大小-->
         <attr name="tab_textsize" format="dimension" />
+        <!--Tab文字距Tab图标的距离-->
+        <attr name="tab_text_top" format="dimension" />
         <!--Tab图标大小-->
         <attr name="tab_icon_size" format="dimension" />
         <!--Tab未选中字体颜色-->
