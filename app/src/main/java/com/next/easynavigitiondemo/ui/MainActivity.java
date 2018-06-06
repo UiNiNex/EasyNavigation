@@ -43,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+
         /*navigitionBar.setOnItemClickListener(new NavigitionBar.OnItemClickListener() {
             @Override
             public void onItemClickEvent(int position) {
