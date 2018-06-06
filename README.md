@@ -16,3 +16,6 @@ Step 2. Add the dependency
 	dependencies {
 	        implementation 'com.github.forvv231:EasyNavigition:0.5'
 	}
+
+
+![image](https://github.com/forvv231/EasyNavigition/master/screenshot/pre2.png)
