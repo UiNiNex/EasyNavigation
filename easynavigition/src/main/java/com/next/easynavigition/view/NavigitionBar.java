@@ -230,7 +230,7 @@ public class NavigitionBar extends LinearLayout {
     public void setData(String[] tabText, int[] normalIcon, int[] selectIcon, List<android.support.v4.app.Fragment> fragments,
                         FragmentManager supportFragmentManager, Anim anim, boolean smoothScroll) {
 
-        setData(tabText, normalIcon, selectIcon, fragments, supportFragmentManager, anim, false, null);
+        setData(tabText, normalIcon, selectIcon, fragments, supportFragmentManager, anim, smoothScroll, null);
 
     }
 
