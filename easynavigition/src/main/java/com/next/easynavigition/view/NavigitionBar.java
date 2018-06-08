@@ -3,6 +3,7 @@ package com.next.easynavigition.view;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
@@ -89,10 +90,11 @@ public class NavigitionBar extends LinearLayout {
 
     //底部Text集合
     private List<TextView> textViewList = new ArrayList<>();
-    private ViewPager mViewPager;
+    private CustomViewPager mViewPager;
     //private GestureDetector detector;
 
     private Techniques anim = null;
+    private boolean smoothScroll = false;
 
     public NavigitionBar(Context context) {
         super(context);
@@ -164,30 +166,135 @@ public class NavigitionBar extends LinearLayout {
         addView(mLinearLayout);
     }
 
+
+    public CustomViewPager getmViewPager() {
+        return mViewPager;
+    }
+
+    /**
+     * @param tabText                Tab文字
+     * @param normalIcon             未选中Tab图标
+     * @param selectIcon             选中时图标
+     * @param fragments              Fragment集合
+     * @param supportFragmentManager 必传
+     */
     public void setData(String[] tabText, int[] normalIcon, int[] selectIcon, List<android.support.v4.app.Fragment> fragments,
                         FragmentManager supportFragmentManager) {
 
-        setData(tabText, normalIcon, selectIcon, fragments, supportFragmentManager, null, null);
+        setData(tabText, normalIcon, selectIcon, fragments, supportFragmentManager, null, false, null);
 
     }
 
+
+    /**
+     * @param tabText                Tab文字
+     * @param normalIcon             未选中Tab图标
+     * @param selectIcon             选中时图标
+     * @param fragments              Fragment集合
+     * @param supportFragmentManager
+     * @param smoothScroll           ViewPager滑动动画
+     */
+    public void setData(String[] tabText, int[] normalIcon, int[] selectIcon, List<android.support.v4.app.Fragment> fragments,
+                        FragmentManager supportFragmentManager, boolean smoothScroll) {
+
+        setData(tabText, normalIcon, selectIcon, fragments, supportFragmentManager, null, smoothScroll, null);
+
+    }
+
+
+    /**
+     * @param tabText                Tab文字
+     * @param normalIcon             未选中Tab图标
+     * @param selectIcon             选中时图标
+     * @param fragments              Fragment集合
+     * @param supportFragmentManager
+     * @param anim                   点击时Tab的动画
+     */
     public void setData(String[] tabText, int[] normalIcon, int[] selectIcon, List<android.support.v4.app.Fragment> fragments,
                         FragmentManager supportFragmentManager, Anim anim) {
 
-        setData(tabText, normalIcon, selectIcon, fragments, supportFragmentManager, anim, null);
+        setData(tabText, normalIcon, selectIcon, fragments, supportFragmentManager, anim, false, null);
 
     }
 
+
+    /**
+     * @param tabText                Tab文字
+     * @param normalIcon             未选中Tab图标
+     * @param selectIcon             选中时图标
+     * @param fragments              Fragment集合
+     * @param supportFragmentManager
+     * @param anim                   点击时Tab的动画
+     * @param smoothScroll           ViewPager滑动动画
+     */
+    public void setData(String[] tabText, int[] normalIcon, int[] selectIcon, List<android.support.v4.app.Fragment> fragments,
+                        FragmentManager supportFragmentManager, Anim anim, boolean smoothScroll) {
+
+        setData(tabText, normalIcon, selectIcon, fragments, supportFragmentManager, anim, false, null);
+
+    }
+
+
+    /**
+     * @param tabText                Tab文字
+     * @param normalIcon             未选中Tab图标
+     * @param selectIcon             选中时图标
+     * @param fragments              Fragment集合
+     * @param supportFragmentManager
+     * @param mOnItemClickListener   点击Tab的监听
+     */
     public void setData(String[] tabText, int[] normalIcon, int[] selectIcon, List<android.support.v4.app.Fragment> fragments,
                         FragmentManager supportFragmentManager, final OnItemClickListener mOnItemClickListener) {
 
-        setData(tabText, normalIcon, selectIcon, fragments, supportFragmentManager, null, mOnItemClickListener);
+        setData(tabText, normalIcon, selectIcon, fragments, supportFragmentManager, null, false, mOnItemClickListener);
 
     }
 
 
+    /**
+     * @param tabText                Tab文字
+     * @param normalIcon             未选中Tab图标
+     * @param selectIcon             选中时图标
+     * @param fragments              Fragment集合
+     * @param supportFragmentManager
+     * @param smoothScroll           ViewPager滑动动画
+     * @param mOnItemClickListener   点击Tab的监听
+     */
+    public void setData(String[] tabText, int[] normalIcon, int[] selectIcon, List<android.support.v4.app.Fragment> fragments,
+                        FragmentManager supportFragmentManager, boolean smoothScroll, final OnItemClickListener mOnItemClickListener) {
+
+        setData(tabText, normalIcon, selectIcon, fragments, supportFragmentManager, null, smoothScroll, mOnItemClickListener);
+
+    }
+
+    /**
+     * @param tabText                Tab文字
+     * @param normalIcon             未选中Tab图标
+     * @param selectIcon             选中时图标
+     * @param fragments              Fragment集合
+     * @param supportFragmentManager
+     * @param anim                   点击时Tab的动画
+     * @param mOnItemClickListener   点击Tab的监听
+     */
     public void setData(String[] tabText, int[] normalIcon, int[] selectIcon, List<android.support.v4.app.Fragment> fragments,
                         FragmentManager supportFragmentManager, Anim anim, final OnItemClickListener mOnItemClickListener) {
+
+        setData(tabText, normalIcon, selectIcon, fragments, supportFragmentManager, anim, false, mOnItemClickListener);
+
+    }
+
+    /**
+     * @param tabText                Tab文字
+     * @param normalIcon             未选中Tab图标
+     * @param selectIcon             选中时图标
+     * @param fragments              Fragment集合
+     * @param supportFragmentManager 必传
+     * @param anim                   点击时Tab的动画
+     * @param smoothScroll           ViewPager滑动动画
+     * @param mOnItemClickListener   点击Tab的监听
+     */
+    public void setData(String[] tabText, int[] normalIcon, int[] selectIcon, List<android.support.v4.app.Fragment> fragments,
+                        FragmentManager supportFragmentManager, Anim anim, final boolean smoothScroll, final OnItemClickListener mOnItemClickListener) {
         if ((tabText.length != normalIcon.length) || (tabText.length != selectIcon.length) || (normalIcon.length != selectIcon.length))
             return;
 
@@ -198,6 +305,7 @@ public class NavigitionBar extends LinearLayout {
 
         this.normalIcon = normalIcon;
         this.selectIcon = selectIcon;
+        this.smoothScroll = smoothScroll;
 
         hintPointList.clear();
         hintPointList.clear();
@@ -272,7 +380,7 @@ public class NavigitionBar extends LinearLayout {
                 public void onClick(View view) {
                     if (mOnItemClickListener != null)
                         mOnItemClickListener.onItemClickEvent(view, view.getId());
-                    mViewPager.setCurrentItem(view.getId());
+                    mViewPager.setCurrentItem(view.getId(), smoothScroll);
                 }
             });
 
@@ -323,7 +431,12 @@ public class NavigitionBar extends LinearLayout {
          }
      }
  */
-    //选中第几项
+
+    /**
+     * 选中第几项
+     *
+     * @param position
+     */
     public void selectPosition(int position) {
         for (int i = 0; i < imageViewList.size(); i++) {
             if (i == position) {
@@ -376,12 +489,18 @@ public class NavigitionBar extends LinearLayout {
         }
     }
 
+    /**
+     * 清空所有提示红点
+     */
     public void clearAllHintPoint() {
         for (int i = 0; i < hintPointList.size(); i++) {
             hintPointList.get(i).setVisibility(GONE);
         }
     }
 
+    /**
+     * 清空所有消息红点
+     */
     public void clearAllMsgPoint() {
         for (int i = 0; i < msgPointList.size(); i++) {
             msgPointList.get(i).setVisibility(GONE);

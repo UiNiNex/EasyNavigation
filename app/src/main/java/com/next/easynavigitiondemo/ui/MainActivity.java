@@ -43,21 +43,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        navigitionBar.getmViewPager().setCanScroll(true);
 
-
-        /*navigitionBar.setOnItemClickListener(new NavigitionBar.OnItemClickListener() {
-            @Override
-            public void onItemClickEvent(int position) {
-                Toast.makeText(MainActivity.this,position+"",Toast.LENGTH_SHORT).show();
-            }
-        });*/
-
-      /*  navigitionBar.setOnDoubleClickListener(new NavigitionBar.OnDoubleClickListener() {
-            @Override
-            public void onDoubleClickEvent(int position) {
-                Toast.makeText(MainActivity.this,"双击"+position,Toast.LENGTH_SHORT).show();
-            }
-        });*/
     }
 
     public void click01(View view) {
