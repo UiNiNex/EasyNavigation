@@ -4,27 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/bt01"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:text="展示消息红点提示"
-        android:onClick="click01" />
 
-    <Button
-        android:id="@+id/bt02"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:onClick="clear"
-        android:text="清除消息红点提示"
-        app:layout_constraintTop_toBottomOf="@id/bt01" />
-
-    <com.next.easynavigition.view.NavigitionBar
+    <com.next.easynavigition.view.NavigitionAddBar
         android:id="@+id/navigitionBar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:navigition_height="60dp">
+        app:add_image_size = "50dp"
+        app:navigition_height="48dp"
+        app:addNavigition_height= "80dp">
 
-    </com.next.easynavigition.view.NavigitionBar>
+    </com.next.easynavigition.view.NavigitionAddBar>
 
 </android.support.constraint.ConstraintLayout>

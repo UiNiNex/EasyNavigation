@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.next.easynavigitiondemo.R;
 
@@ -18,6 +19,30 @@ public class FirstFragment extends android.support.v4.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_first,null);
+
+        Button bt01 = view.findViewById(R.id.bt01);
+        bt01.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MainActivity)getActivity()).getNavigitionBar().setMsgPointCount(2, 109);
+                ((MainActivity)getActivity()).getNavigitionBar().setMsgPointCount(0, 5);
+                ((MainActivity)getActivity()).getNavigitionBar().setHintPoint(3, true);
+            }
+        });
+
+
+        Button bt02 = view.findViewById(R.id.bt02);
+        bt02.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MainActivity)getActivity()).getNavigitionBar().clearAllMsgPoint();
+                ((MainActivity)getActivity()).getNavigitionBar().clearAllHintPoint();
+            }
+        });
+
+
         return view;
     }
+
+
 }

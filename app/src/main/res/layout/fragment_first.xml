@@ -1,7 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <Button
+        android:id="@+id/bt01"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="展示消息红点提示"
+        android:onClick="click01" />
+
+    <Button
+        android:id="@+id/bt02"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:onClick="clear"
+        android:text="清除消息红点提示"
+        app:layout_constraintTop_toBottomOf="@id/bt01" />
+
 
     <TextView
         android:layout_width="match_parent"
