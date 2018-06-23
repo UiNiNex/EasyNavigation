@@ -6,18 +6,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.next.easynavigition.constant.Anim;
-import com.next.easynavigition.view.NavigitionAddBar;
 import com.next.easynavigition.view.NavigitionBar;
 import com.next.easynavigitiondemo.R;
 
@@ -26,7 +23,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private NavigitionAddBar navigitionBar;
+    private NavigitionBar navigitionBar;
 
     private String[] tabText = {"首页", "发现", "消息", "我的"};
     //未选中icon
@@ -67,12 +64,12 @@ public class MainActivity extends AppCompatActivity {
              iconView.addView(itemView);
         }
 
-      navigitionBar.setData(tabText,normalIcon,selectIcon,fragments,R.drawable.add_image,getSupportFragmentManager(),Anim.ZoomIn, false,new NavigitionAddBar.OnItemClickListener() {
+      navigitionBar.setAddData(tabText,normalIcon,selectIcon,fragments,R.drawable.add_image,getSupportFragmentManager(),Anim.ZoomIn, false,new NavigitionBar.OnItemClickListener() {
           @Override
           public void onItemClickEvent(View view, int position) {
               Toast.makeText(MainActivity.this,"您点击了第"+(position+1)+"个Tab",Toast.LENGTH_SHORT).show();
           }
-      }, new NavigitionAddBar.OnAddClickListener() {
+      }, new NavigitionBar.OnAddClickListener() {
           @Override
           public void OnAddClickEvent(View view) {
               Toast.makeText(MainActivity.this,"您点击了加号》》》》》》",Toast.LENGTH_SHORT).show();
@@ -201,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public NavigitionAddBar getNavigitionBar() {
+    public NavigitionBar getNavigitionBar() {
         return navigitionBar;
     }
 

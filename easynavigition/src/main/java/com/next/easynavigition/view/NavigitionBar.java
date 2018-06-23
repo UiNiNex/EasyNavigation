@@ -8,6 +8,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -31,12 +33,16 @@ public class NavigitionBar extends LinearLayout {
 
     private OnItemClickListener mOnItemClickListener;
     //private OnDoubleClickListener mOnDoubleClickListener;
+    private NavigitionBar.OnAddClickListener onAddClickListener;
+    private int addImageRes;
+    private RelativeLayout containerLayout;
+    private float addContainerHeight;
 
     //Tab数量
     private int tabCount = 0;
 
     private LinearLayout navigitionLayout;
-    private LinearLayout mLinearLayout;
+    private RelativeLayout mLinearLayout;
 
     //未选中Tab字体颜色
     private int normalTextColor = 0xff555555;
@@ -90,11 +96,18 @@ public class NavigitionBar extends LinearLayout {
 
     //底部Text集合
     private List<TextView> textViewList = new ArrayList<>();
+
+    //底部TabLayout（除中间加号）
+    private List<View> tabList = new ArrayList<>();
+
     private CustomViewPager mViewPager;
     //private GestureDetector detector;
 
     private Techniques anim = null;
     private boolean smoothScroll = false;
+
+    private float addImageSize = SmallUtil.dip2px(getContext(), 36);
+    private ViewGroup addViewLayout;
 
     public NavigitionBar(Context context) {
         super(context);
@@ -124,7 +137,10 @@ public class NavigitionBar extends LinearLayout {
     }
 
     private void initViews(Context context, AttributeSet attrs) {
-        mLinearLayout = (LinearLayout) View.inflate(context, R.layout.container_layout, null);
+        mLinearLayout = (RelativeLayout) View.inflate(context, R.layout.container_layout, null);
+
+        addViewLayout  = mLinearLayout.findViewById(R.id.add_view_ll);
+        containerLayout = mLinearLayout.findViewById(R.id.container_rl);
         navigitionLayout = mLinearLayout.findViewById(R.id.navigition_ll);
         mViewPager = mLinearLayout.findViewById(R.id.mViewPager);
         View common_horizontal_line = mLinearLayout.findViewById(R.id.common_horizontal_line);
@@ -134,7 +150,7 @@ public class NavigitionBar extends LinearLayout {
             float navigitionHeight = attributes.getDimensionPixelSize(R.styleable.NavigitionBar_navigition_height, SmallUtil.dip2px(context, 48));
             int navigitionBackground = attributes.getColor(R.styleable.NavigitionBar_navigition_background, 0xffffffff);
             navigitionLayout.setBackgroundColor(navigitionBackground);
-            LayoutParams params = (LayoutParams) navigitionLayout.getLayoutParams();
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) navigitionLayout.getLayoutParams();
             params.height = (int) navigitionHeight;
             navigitionLayout.setLayoutParams(params);
 
@@ -148,12 +164,20 @@ public class NavigitionBar extends LinearLayout {
             msgPointLeft = attributes.getDimension(R.styleable.NavigitionBar_msg_point_left, -SmallUtil.dip2px(context, 5));
             msgPointTextSize = attributes.getDimension(R.styleable.NavigitionBar_msg_point_textsize, SmallUtil.sp2px(context, 9));
             tabTextTop = attributes.getDimension(R.styleable.NavigitionBar_tab_text_top, SmallUtil.dip2px(context, 2));
+            addImageSize = attributes.getDimension(R.styleable.NavigitionBar_add_image_size, SmallUtil.dip2px(context, 36));
+            addImageRes = attributes.getInteger(R.styleable.NavigitionBar_add_image_res, R.drawable.add_image);
+
 
             lineHeight = attributes.getDimension(R.styleable.NavigitionBar_line_height, 1);
             lineColor = attributes.getColor(R.styleable.NavigitionBar_line_color, 0xcccccccc);
             common_horizontal_line.setBackgroundColor(lineColor);
 
-            LayoutParams lineParams = (LayoutParams) common_horizontal_line.getLayoutParams();
+            addContainerHeight = attributes.getDimension(R.styleable.NavigitionBar_addNavigition_height, navigitionHeight+lineHeight);
+            LayoutParams addLayoutParams = (LayoutParams) containerLayout.getLayoutParams();
+            addLayoutParams.height = (int) addContainerHeight;
+            containerLayout.setLayoutParams(addLayoutParams);
+
+            RelativeLayout.LayoutParams lineParams = ( RelativeLayout.LayoutParams) common_horizontal_line.getLayoutParams();
             lineParams.height = (int) lineHeight;
             common_horizontal_line.setLayoutParams(lineParams);
 
@@ -398,6 +422,191 @@ public class NavigitionBar extends LinearLayout {
 
     }
 
+
+    /**
+     * @param tabText                Tab文字
+     * @param normalIcon             未选中Tab图标
+     * @param selectIcon             选中时图标
+     * @param fragments              Fragment集合
+     * @param supportFragmentManager 必传
+     * @param anim                   点击时Tab的动画
+     * @param smoothScroll           ViewPager滑动动画
+     * @param onItemClickListener   点击Tab的监听
+     */
+    public void setAddData(String[] tabText, int[] normalIcon, int[] selectIcon, List<Fragment> fragments, int addIcon,
+                        FragmentManager supportFragmentManager, Anim anim, final boolean smoothScroll,
+                           final NavigitionBar.OnItemClickListener onItemClickListener, final NavigitionBar.OnAddClickListener onAddClickListener) {
+        if ((tabText.length != normalIcon.length) || (tabText.length != selectIcon.length) || (normalIcon.length != selectIcon.length))
+            return;
+
+        this.mOnItemClickListener =  onItemClickListener;
+        this.onAddClickListener = onAddClickListener;
+        if (anim != null)
+            this.anim = anim.getYoyo();
+        tabCount = tabText.length + 1;
+        int index = 0;
+
+        this.normalIcon = normalIcon;
+        this.selectIcon = selectIcon;
+        this.smoothScroll = smoothScroll;
+        addImageRes = addIcon;
+
+        hintPointList.clear();
+        hintPointList.clear();
+        imageViewList.clear();
+        textViewList.clear();
+        tabList.clear();
+
+        navigitionLayout.removeAllViews();
+
+        ViewPagerAdapter adapter = new ViewPagerAdapter(supportFragmentManager, fragments);
+        mViewPager.setAdapter(adapter);
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                selectPosition(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+        for (int i = 0; i < tabCount; i++) {
+
+            if (i == tabCount / 2) {
+                RelativeLayout addLayout = new RelativeLayout(getContext());
+                RelativeLayout.LayoutParams addParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                addParams.width = SmallUtil.getScreenWidth(getContext()) / tabCount;
+                //addParams.bottomMargin = SmallUtil.dip2px(getContext(),100);
+                addLayout.setLayoutParams(addParams);
+                navigitionLayout.addView(addLayout);
+            } else {
+
+                if (i > 1) {
+                    index = i - 1;
+                } else {
+                    index = i;
+                }
+
+                View itemView = View.inflate(getContext(), R.layout.navigition_tab_layout, null);
+                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                params.width = SmallUtil.getScreenWidth(getContext()) / tabCount;
+
+                itemView.setLayoutParams(params);
+                itemView.setId(index);
+
+                TextView text = itemView.findViewById(R.id.tab_text_tv);
+                ImageView icon = itemView.findViewById(R.id.tab_icon_iv);
+                LayoutParams iconParams = (LayoutParams) icon.getLayoutParams();
+                iconParams.width = (int) iconSize;
+                iconParams.height = (int) iconSize;
+                icon.setLayoutParams(iconParams);
+
+                imageViewList.add(icon);
+                textViewList.add(text);
+
+                itemView.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (mOnItemClickListener != null)
+                            mOnItemClickListener.onItemClickEvent(view, view.getId());
+                        mViewPager.setCurrentItem(view.getId(), smoothScroll);
+                    }
+                });
+
+                LayoutParams textParams = (LayoutParams) text.getLayoutParams();
+                textParams.topMargin = (int) tabTextTop;
+                text.setLayoutParams(textParams);
+                text.setText(tabText[index]);
+                text.setTextSize(SmallUtil.px2sp(getContext(), tabTextSize));
+
+
+                View hintPoint = itemView.findViewById(R.id.red_point);
+
+                //提示红点
+                RelativeLayout.LayoutParams hintPointParams = (RelativeLayout.LayoutParams) hintPoint.getLayoutParams();
+                hintPointParams.topMargin = (int) redPointTop;
+                hintPointParams.width = (int) hintPointSize;
+                hintPointParams.height = (int) hintPointSize;
+                hintPointParams.leftMargin = (int) hintPointLeft;
+                hintPoint.setLayoutParams(hintPointParams);
+
+                //消息红点
+                TextView msgPoint = itemView.findViewById(R.id.msg_point_tv);
+                msgPoint.setTextSize(SmallUtil.px2sp(getContext(), msgPointTextSize));
+                RelativeLayout.LayoutParams msgPointParams = (RelativeLayout.LayoutParams) msgPoint.getLayoutParams();
+                msgPointParams.topMargin = (int) msgPointTop;
+                msgPointParams.width = (int) msgPointSize;
+                msgPointParams.height = (int) msgPointSize;
+                msgPointParams.leftMargin = (int) msgPointLeft;
+                msgPoint.setLayoutParams(msgPointParams);
+
+
+                hintPointList.add(hintPoint);
+                msgPointList.add(msgPoint);
+
+
+                tabList.add(itemView);
+                navigitionLayout.addView(itemView);
+            }
+        }
+
+
+        RelativeLayout addLayout = new RelativeLayout(getContext());
+        RelativeLayout.LayoutParams addParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        addParams.width = SmallUtil.getScreenWidth(getContext()) / tabCount;
+        //addParams.height = (int) addContainerHeight;
+        addParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+        // addLayout.setBackgroundResource(R.drawable.oval_white);
+        // addLayout.setPadding(SmallUtil.dip2px(getContext(),5),SmallUtil.dip2px(getContext(),5),SmallUtil.dip2px(getContext(),5),SmallUtil.dip2px(getContext(),5));
+        addLayout.setLayoutParams(addParams);
+
+        ImageView addImage = new ImageView(getContext());
+        RelativeLayout.LayoutParams imageParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        imageParams.width = (int) addImageSize;
+        imageParams.height = (int) addImageSize;
+        //imageParams.bottomMargin = SmallUtil.dip2px(getContext(),100);
+        imageParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+        addImage.setLayoutParams(imageParams);
+
+        addImage.setImageResource(addImageRes);
+        addImage.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onAddClickListener.OnAddClickEvent(view);
+               /* if (view.getTag()==null||(int)view.getTag() == 0) {
+                    //view.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.anim_rotate_left));
+                    view.setTag(1);
+                    addViewLayout.setVisibility(VISIBLE);
+                } else {
+                    //view.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.anim_rotate_right));
+                    view.setTag(0);
+                    addViewLayout.setVisibility(GONE);
+                }*/
+            }
+        });
+
+        addLayout.addView(addImage, imageParams);
+        containerLayout.addView(addLayout, addParams);
+
+        for (int i = 0; i < imageViewList.size(); i++) {
+            if (i == 0) {
+                imageViewList.get(i).setImageResource(selectIcon[i]);
+                textViewList.get(i).setTextColor(selectTextColor);
+            } else {
+                imageViewList.get(i).setImageResource(normalIcon[i]);
+                textViewList.get(i).setTextColor(normalTextColor);
+            }
+        }
+    }
+
   /*  public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         mOnItemClickListener = onItemClickListener;
         if (tabCount < 1) {
@@ -413,7 +622,14 @@ public class NavigitionBar extends LinearLayout {
             });
         }
     }*/
+  public void setAddViewLayout(View addViewLayout) {
+      FrameLayout.LayoutParams addParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+      this.addViewLayout.addView(addViewLayout,addParams);
+  }
 
+    public ViewGroup getAddViewLayout() {
+        return addViewLayout;
+    }
     /* public void setOnDoubleClickListener(OnDoubleClickListener mOnDoubleClickListener) {
          this.mOnDoubleClickListener = mOnDoubleClickListener;
          if (tabCount < 1) {
@@ -441,7 +657,7 @@ public class NavigitionBar extends LinearLayout {
         for (int i = 0; i < imageViewList.size(); i++) {
             if (i == position) {
                 if (anim != null)
-                    YoYo.with(anim).duration(300).playOn(navigitionLayout.getChildAt(i));
+                    YoYo.with(anim).duration(300).playOn(tabList.get(i));
                 imageViewList.get(i).setImageResource(selectIcon[i]);
                 textViewList.get(i).setTextColor(selectTextColor);
             } else {
@@ -510,6 +726,11 @@ public class NavigitionBar extends LinearLayout {
 
     public interface OnItemClickListener {
         void onItemClickEvent(View view, int position);
+    }
+
+
+    public interface OnAddClickListener {
+        void OnAddClickEvent(View view);
     }
 
   /*  //双击事件
