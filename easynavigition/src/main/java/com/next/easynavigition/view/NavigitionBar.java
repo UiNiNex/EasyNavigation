@@ -460,6 +460,7 @@ public class NavigitionBar extends LinearLayout {
         navigitionLayout.removeAllViews();
 
         ViewPagerAdapter adapter = new ViewPagerAdapter(supportFragmentManager, fragments);
+        mViewPager.setOffscreenPageLimit(3);
         mViewPager.setAdapter(adapter);
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
