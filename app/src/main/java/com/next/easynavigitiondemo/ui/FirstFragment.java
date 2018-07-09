@@ -1,5 +1,6 @@
 package com.next.easynavigitiondemo.ui;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -18,15 +19,21 @@ public class FirstFragment extends android.support.v4.app.Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_first,null);
+        View view = inflater.inflate(R.layout.fragment_first, null);
 
         Button bt01 = view.findViewById(R.id.bt01);
         bt01.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MainActivity)getActivity()).getNavigitionBar().setMsgPointCount(2, 109);
-                ((MainActivity)getActivity()).getNavigitionBar().setMsgPointCount(0, 5);
-                ((MainActivity)getActivity()).getNavigitionBar().setHintPoint(3, true);
+                if (getActivity() instanceof MainActivity) {
+                    ((MainActivity) getActivity()).getNavigitionBar().setMsgPointCount(2, 109);
+                    ((MainActivity) getActivity()).getNavigitionBar().setMsgPointCount(0, 5);
+                    ((MainActivity) getActivity()).getNavigitionBar().setHintPoint(3, true);
+                } else if (getActivity() instanceof NoAddActivity) {
+                    ((NoAddActivity) getActivity()).getNavigitionBar().setMsgPointCount(2, 109);
+                    ((NoAddActivity) getActivity()).getNavigitionBar().setMsgPointCount(0, 5);
+                    ((NoAddActivity) getActivity()).getNavigitionBar().setHintPoint(3, true);
+                }
             }
         });
 
@@ -35,8 +42,14 @@ public class FirstFragment extends android.support.v4.app.Fragment {
         bt02.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MainActivity)getActivity()).getNavigitionBar().clearAllMsgPoint();
-                ((MainActivity)getActivity()).getNavigitionBar().clearAllHintPoint();
+                if (getActivity() instanceof MainActivity) {
+                    ((MainActivity) getActivity()).getNavigitionBar().clearAllMsgPoint();
+                    ((MainActivity) getActivity()).getNavigitionBar().clearAllHintPoint();
+                } else if (getActivity() instanceof NoAddActivity) {
+                    ((NoAddActivity) getActivity()).getNavigitionBar().clearAllMsgPoint();
+                    ((NoAddActivity) getActivity()).getNavigitionBar().clearAllHintPoint();
+                }
+
             }
         });
 
