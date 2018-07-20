@@ -2,6 +2,7 @@ package com.next.easynavigition.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -29,61 +30,22 @@ import java.util.List;
  * Created by Jue on 2018/6/1.
  */
 
-public class NavigitionBar extends LinearLayout {
+public class EasyNavigitionBar extends LinearLayout {
 
-    private OnItemClickListener mOnItemClickListener;
+    private Context context;
+
     //private OnDoubleClickListener mOnDoubleClickListener;
-    private NavigitionBar.OnAddClickListener onAddClickListener;
-    private int addImageRes;
     private RelativeLayout containerLayout;
-    private float addContainerHeight;
 
     //Tab数量
     private int tabCount = 0;
 
     private LinearLayout navigitionLayout;
     private RelativeLayout mLinearLayout;
-
-    //未选中Tab字体颜色
-    private int normalTextColor = 0xff555555;
-    //选中字体颜色
-    private int selectTextColor = 0xff555555;
-    //分割线高度
-    private float lineHeight = 1;
-    //分割线颜色
-    private int lineColor = 0xcccccc;
-    //消息红点字体大小
-    private float msgPointTextSize = SmallUtil.sp2px(getContext(), 9);
-    //消息红点大小
-    private float msgPointSize = SmallUtil.dip2px(getContext(), 18);
-    //提示红点大小
-    private float hintPointSize = SmallUtil.dip2px(getContext(), 6);
-    //提示红点距Tab图标的距离
-    private float hintPointLeft = 0;
-    //消息红点距Tab图标的距离
-    private float msgPointLeft = -SmallUtil.dip2px(getContext(), 5);
-    //Tab文字距Tab图标的距离
-    private float tabTextTop = SmallUtil.dip2px(getContext(), 2);
+    //分割线
+    private View common_horizontal_line;
 
     private int doubleClickPositon = -1;
-
-    //Tab图标大小
-    private float iconSize = SmallUtil.dip2px(getContext(), 20);
-
-    //红点距顶部的距离
-    private float redPointTop = SmallUtil.dip2px(getContext(), 5);
-
-    //消息红点距顶部的距离
-    private float msgPointTop = SmallUtil.dip2px(getContext(), 3);
-
-    //Tab文字大小
-    private float tabTextSize = SmallUtil.sp2px(getContext(), 10);
-
-    //未选图片
-    private int[] normalIcon;
-
-    //已选图片集合
-    private int[] selectIcon;
 
     //红点集合
     private List<View> hintPointList = new ArrayList<>();
@@ -103,19 +65,76 @@ public class NavigitionBar extends LinearLayout {
     private CustomViewPager mViewPager;
     //private GestureDetector detector;
 
-    private Techniques anim = null;
-    private boolean smoothScroll = false;
-
-    private float addImageSize = SmallUtil.dip2px(getContext(), 36);
     private ViewGroup addViewLayout;
 
-    public NavigitionBar(Context context) {
+
+    //文字集合
+    private String[] titleItems;
+    //未选择 图片集合
+    private int[] normalIconItems;
+    //已选择 图片集合
+    private int[] selectIconItems;
+    //fragment集合
+    private List<Fragment> fragmentList = new ArrayList<>();
+
+    private FragmentManager fragmentManager;
+
+    //Tab点击动画效果
+    private Techniques anim = null;
+    //ViewPager切换动画
+    private boolean smoothScroll = false;
+    //是否添加中间的按钮
+    private boolean isAdd;
+    //图标大小
+    private int iconSize = 20;
+
+    //提示红点大小
+    private float hintPointSize = 6;
+    //提示红点距Tab图标的距离
+    private float hintPointLeft = 0;
+    //提示红点距顶部的距离
+    private float hintPointTop = 5;
+
+    private EasyNavigitionBar.OnItemClickListener onItemClickListener;
+    //消息红点字体大小
+    private float msgPointTextSize = 9;
+    //消息红点大小
+    private float msgPointSize = 18;
+    //消息红点距Tab图标的距离
+    private float msgPointLeft = -5;
+    //消息红点距顶部的距离
+    private float msgPointTop = 3;
+    //Tab文字距Tab图标的距离
+    private float tabTextTop = 2;
+    //Tab文字大小
+    private float tabTextSize = 10;
+    //未选中Tab字体颜色
+    private int normalTextColor = Color.parseColor("#666666");
+    //选中字体颜色
+    private int selectTextColor = Color.parseColor("#333333");
+    //分割线高度
+    private float lineHeight = 1;
+    //分割线颜色
+    private int lineColor = Color.parseColor("#f7f7f7");
+
+    private int navigitionBackground = Color.parseColor("#ffffff");
+    private float navigitionHeight = 52;
+
+
+    //Add
+    private EasyNavigitionBar.OnAddClickListener onAddClickListener;
+    private float addIconSize = 36;
+    private int addIcon;
+    private float addLayoutHeight = navigitionHeight;
+
+
+    public EasyNavigitionBar(Context context) {
         super(context);
 
         initViews(context, null);
     }
 
-    public NavigitionBar(Context context, @Nullable AttributeSet attrs) {
+    public EasyNavigitionBar(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
 
         init();
@@ -137,201 +156,107 @@ public class NavigitionBar extends LinearLayout {
     }
 
     private void initViews(Context context, AttributeSet attrs) {
-        mLinearLayout = (RelativeLayout) View.inflate(context, R.layout.container_layout, null);
 
+        this.context = context;
+
+        mLinearLayout = (RelativeLayout) View.inflate(context, R.layout.container_layout, null);
         addViewLayout = mLinearLayout.findViewById(R.id.add_view_ll);
         containerLayout = mLinearLayout.findViewById(R.id.container_rl);
         navigitionLayout = mLinearLayout.findViewById(R.id.navigition_ll);
         mViewPager = mLinearLayout.findViewById(R.id.mViewPager);
-        View common_horizontal_line = mLinearLayout.findViewById(R.id.common_horizontal_line);
+        common_horizontal_line = mLinearLayout.findViewById(R.id.common_horizontal_line);
 
-        TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.NavigitionBar);
+
+        toDp();
+
+
+        TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.EasyNavigitionBar);
+        parseStyle(attributes);
+
+        addView(mLinearLayout);
+    }
+
+    private void parseStyle(TypedArray attributes) {
         if (attributes != null) {
-            float navigitionHeight = attributes.getDimensionPixelSize(R.styleable.NavigitionBar_navigition_height, SmallUtil.dip2px(context, 48));
-            int navigitionBackground = attributes.getColor(R.styleable.NavigitionBar_navigition_background, 0xffffffff);
+            navigitionHeight = attributes.getDimension(R.styleable.EasyNavigitionBar_navigitionHeight, navigitionHeight);
+            navigitionBackground = attributes.getColor(R.styleable.EasyNavigitionBar_navigitionBackground, navigitionBackground);
             navigitionLayout.setBackgroundColor(navigitionBackground);
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) navigitionLayout.getLayoutParams();
             params.height = (int) navigitionHeight;
             navigitionLayout.setLayoutParams(params);
 
-            tabTextSize = attributes.getDimension(R.styleable.NavigitionBar_tab_textsize, SmallUtil.sp2px(context, 10));
-            redPointTop = attributes.getDimension(R.styleable.NavigitionBar_red_point_top, SmallUtil.dip2px(context, 5));
-            msgPointTop = attributes.getDimension(R.styleable.NavigitionBar_msg_point_top, SmallUtil.dip2px(context, 3));
-            iconSize = attributes.getDimension(R.styleable.NavigitionBar_tab_icon_size, SmallUtil.dip2px(context, 20));
-            hintPointSize = attributes.getDimension(R.styleable.NavigitionBar_hint_point_size, SmallUtil.dip2px(context, 6));
-            msgPointSize = attributes.getDimension(R.styleable.NavigitionBar_msg_point_size, SmallUtil.dip2px(context, 18));
-            hintPointLeft = attributes.getDimension(R.styleable.NavigitionBar_hint_point_left, SmallUtil.dip2px(context, 0));
-            msgPointLeft = attributes.getDimension(R.styleable.NavigitionBar_msg_point_left, -SmallUtil.dip2px(context, 5));
-            msgPointTextSize = attributes.getDimension(R.styleable.NavigitionBar_msg_point_textsize, SmallUtil.sp2px(context, 9));
-            tabTextTop = attributes.getDimension(R.styleable.NavigitionBar_tab_text_top, SmallUtil.dip2px(context, 2));
-            addImageSize = attributes.getDimension(R.styleable.NavigitionBar_add_image_size, SmallUtil.dip2px(context, 36));
-            addImageRes = attributes.getInteger(R.styleable.NavigitionBar_add_image_res, R.drawable.add_image);
+            tabTextSize = attributes.getDimension(R.styleable.EasyNavigitionBar_tabTextSize, tabTextSize);
+            tabTextTop = attributes.getDimension(R.styleable.EasyNavigitionBar_tabTextTop, tabTextTop);
+            iconSize = (int) attributes.getDimension(R.styleable.EasyNavigitionBar_tabIconSize, iconSize);
+            hintPointSize = attributes.getDimension(R.styleable.EasyNavigitionBar_hintPointSize, hintPointSize);
+            msgPointSize = attributes.getDimension(R.styleable.EasyNavigitionBar_msgPointSize, msgPointSize);
+            hintPointLeft = attributes.getDimension(R.styleable.EasyNavigitionBar_hintPointLeft, hintPointLeft);
+            msgPointTop = attributes.getDimension(R.styleable.EasyNavigitionBar_msgPointTop, msgPointTop);
+            hintPointTop = attributes.getDimension(R.styleable.EasyNavigitionBar_hintPointTop, hintPointTop);
+
+            msgPointLeft = attributes.getDimension(R.styleable.EasyNavigitionBar_msgPointLeft, msgPointLeft);
+            msgPointTextSize = attributes.getDimension(R.styleable.EasyNavigitionBar_msgPointTextSize, msgPointTextSize);
+            addIconSize = attributes.getDimension(R.styleable.EasyNavigitionBar_addImageSize, addIconSize);
+            addIcon = attributes.getInteger(R.styleable.EasyNavigitionBar_addIconRes, addIcon);
 
 
-            lineHeight = attributes.getDimension(R.styleable.NavigitionBar_line_height, 1);
-            lineColor = attributes.getColor(R.styleable.NavigitionBar_line_color, 0xcccccccc);
+            lineHeight = attributes.getDimension(R.styleable.EasyNavigitionBar_lineHeight, lineHeight);
+            lineColor = attributes.getColor(R.styleable.EasyNavigitionBar_lineColor, lineColor);
             common_horizontal_line.setBackgroundColor(lineColor);
 
-            addContainerHeight = attributes.getDimension(R.styleable.NavigitionBar_addNavigition_height, navigitionHeight + lineHeight);
+            addLayoutHeight = attributes.getDimension(R.styleable.EasyNavigitionBar_addLayoutHeight, navigitionHeight + lineHeight);
             LayoutParams addLayoutParams = (LayoutParams) containerLayout.getLayoutParams();
-            addLayoutParams.height = (int) addContainerHeight;
+            addLayoutParams.height = (int) addLayoutHeight;
             containerLayout.setLayoutParams(addLayoutParams);
 
             RelativeLayout.LayoutParams lineParams = (RelativeLayout.LayoutParams) common_horizontal_line.getLayoutParams();
             lineParams.height = (int) lineHeight;
             common_horizontal_line.setLayoutParams(lineParams);
 
-            normalTextColor = attributes.getColor(R.styleable.NavigitionBar_tab_normal_color, 0xff555555);
-            selectTextColor = attributes.getColor(R.styleable.NavigitionBar_tab_select_color, 0xff555555);
+            normalTextColor = attributes.getColor(R.styleable.EasyNavigitionBar_tabNormalColor, normalTextColor);
+            selectTextColor = attributes.getColor(R.styleable.EasyNavigitionBar_tabSelectColor, selectTextColor);
 
             attributes.recycle();
         }
+    }
 
-        addView(mLinearLayout);
+    //将dp、sp转换成px
+    private void toDp() {
+        navigitionHeight = SmallUtil.dip2px(getContext(), navigitionHeight);
+        iconSize = SmallUtil.dip2px(getContext(), iconSize);
+        hintPointSize = SmallUtil.dip2px(getContext(), hintPointSize);
+        hintPointTop = SmallUtil.dip2px(getContext(), hintPointTop);
+        hintPointLeft = SmallUtil.dip2px(getContext(), hintPointLeft);
+
+        msgPointLeft = SmallUtil.dip2px(getContext(), msgPointLeft);
+        msgPointTop = SmallUtil.dip2px(getContext(), msgPointTop);
+        msgPointSize = SmallUtil.dip2px(getContext(), msgPointSize);
+        msgPointTextSize = SmallUtil.sp2px(getContext(), msgPointTextSize);
+
+        tabTextTop = SmallUtil.dip2px(getContext(), tabTextTop);
+        tabTextSize = SmallUtil.sp2px(getContext(), tabTextSize);
+
+
+        //Add
+        addIconSize = SmallUtil.dip2px(getContext(), addIconSize);
+        addLayoutHeight = SmallUtil.dip2px(getContext(), addLayoutHeight);
     }
 
 
-    public CustomViewPager getmViewPager() {
-        return mViewPager;
+    public void build() {
+        if (isAdd) {
+            buildAddNavigition();
+        } else {
+            buildNavigition();
+        }
     }
 
-    /**
-     * @param tabText                Tab文字
-     * @param normalIcon             未选中Tab图标
-     * @param selectIcon             选中时图标
-     * @param fragments              Fragment集合
-     * @param supportFragmentManager 必传
-     */
-    public void setData(String[] tabText, int[] normalIcon, int[] selectIcon, List<android.support.v4.app.Fragment> fragments,
-                        FragmentManager supportFragmentManager) {
-
-        setData(tabText, normalIcon, selectIcon, fragments, supportFragmentManager, null, false, null);
-
-    }
-
-
-    /**
-     * @param tabText                Tab文字
-     * @param normalIcon             未选中Tab图标
-     * @param selectIcon             选中时图标
-     * @param fragments              Fragment集合
-     * @param supportFragmentManager
-     * @param smoothScroll           ViewPager滑动动画
-     */
-    public void setData(String[] tabText, int[] normalIcon, int[] selectIcon, List<android.support.v4.app.Fragment> fragments,
-                        FragmentManager supportFragmentManager, boolean smoothScroll) {
-
-        setData(tabText, normalIcon, selectIcon, fragments, supportFragmentManager, null, smoothScroll, null);
-
-    }
-
-
-    /**
-     * @param tabText                Tab文字
-     * @param normalIcon             未选中Tab图标
-     * @param selectIcon             选中时图标
-     * @param fragments              Fragment集合
-     * @param supportFragmentManager
-     * @param anim                   点击时Tab的动画
-     */
-    public void setData(String[] tabText, int[] normalIcon, int[] selectIcon, List<android.support.v4.app.Fragment> fragments,
-                        FragmentManager supportFragmentManager, Anim anim) {
-
-        setData(tabText, normalIcon, selectIcon, fragments, supportFragmentManager, anim, false, null);
-
-    }
-
-
-    /**
-     * @param tabText                Tab文字
-     * @param normalIcon             未选中Tab图标
-     * @param selectIcon             选中时图标
-     * @param fragments              Fragment集合
-     * @param supportFragmentManager
-     * @param anim                   点击时Tab的动画
-     * @param smoothScroll           ViewPager滑动动画
-     */
-    public void setData(String[] tabText, int[] normalIcon, int[] selectIcon, List<android.support.v4.app.Fragment> fragments,
-                        FragmentManager supportFragmentManager, Anim anim, boolean smoothScroll) {
-
-        setData(tabText, normalIcon, selectIcon, fragments, supportFragmentManager, anim, smoothScroll, null);
-
-    }
-
-
-    /**
-     * @param tabText                Tab文字
-     * @param normalIcon             未选中Tab图标
-     * @param selectIcon             选中时图标
-     * @param fragments              Fragment集合
-     * @param supportFragmentManager
-     * @param mOnItemClickListener   点击Tab的监听
-     */
-    public void setData(String[] tabText, int[] normalIcon, int[] selectIcon, List<android.support.v4.app.Fragment> fragments,
-                        FragmentManager supportFragmentManager, final OnItemClickListener mOnItemClickListener) {
-
-        setData(tabText, normalIcon, selectIcon, fragments, supportFragmentManager, null, false, mOnItemClickListener);
-
-    }
-
-
-    /**
-     * @param tabText                Tab文字
-     * @param normalIcon             未选中Tab图标
-     * @param selectIcon             选中时图标
-     * @param fragments              Fragment集合
-     * @param supportFragmentManager
-     * @param smoothScroll           ViewPager滑动动画
-     * @param mOnItemClickListener   点击Tab的监听
-     */
-    public void setData(String[] tabText, int[] normalIcon, int[] selectIcon, List<android.support.v4.app.Fragment> fragments,
-                        FragmentManager supportFragmentManager, boolean smoothScroll, final OnItemClickListener mOnItemClickListener) {
-
-        setData(tabText, normalIcon, selectIcon, fragments, supportFragmentManager, null, smoothScroll, mOnItemClickListener);
-
-    }
-
-    /**
-     * @param tabText                Tab文字
-     * @param normalIcon             未选中Tab图标
-     * @param selectIcon             选中时图标
-     * @param fragments              Fragment集合
-     * @param supportFragmentManager
-     * @param anim                   点击时Tab的动画
-     * @param mOnItemClickListener   点击Tab的监听
-     */
-    public void setData(String[] tabText, int[] normalIcon, int[] selectIcon, List<android.support.v4.app.Fragment> fragments,
-                        FragmentManager supportFragmentManager, Anim anim, final OnItemClickListener mOnItemClickListener) {
-
-        setData(tabText, normalIcon, selectIcon, fragments, supportFragmentManager, anim, false, mOnItemClickListener);
-
-    }
-
-    /**
-     * @param tabText                Tab文字
-     * @param normalIcon             未选中Tab图标
-     * @param selectIcon             选中时图标
-     * @param fragments              Fragment集合
-     * @param supportFragmentManager 必传
-     * @param anim                   点击时Tab的动画
-     * @param smoothScroll           ViewPager滑动动画
-     * @param mOnItemClickListener   点击Tab的监听
-     */
-    public void setData(String[] tabText, int[] normalIcon, int[] selectIcon, List<android.support.v4.app.Fragment> fragments,
-                        FragmentManager supportFragmentManager, Anim anim, final boolean smoothScroll, final OnItemClickListener mOnItemClickListener) {
-        if ((tabText.length != normalIcon.length) || (tabText.length != selectIcon.length) || (normalIcon.length != selectIcon.length))
+    public void buildNavigition() {
+        if ((titleItems.length != normalIconItems.length) || (titleItems.length != selectIconItems.length) || (normalIconItems.length != selectIconItems.length))
             return;
 
-        this.mOnItemClickListener = mOnItemClickListener;
-        if (anim != null)
-            this.anim = anim.getYoyo();
-        tabCount = tabText.length;
+        tabCount = titleItems.length;
 
-        this.normalIcon = normalIcon;
-        this.selectIcon = selectIcon;
-        this.smoothScroll = smoothScroll;
-
-        hintPointList.clear();
         hintPointList.clear();
         imageViewList.clear();
         textViewList.clear();
@@ -340,8 +265,9 @@ public class NavigitionBar extends LinearLayout {
 
         navigitionLayout.removeAllViews();
 
-        ViewPagerAdapter adapter = new ViewPagerAdapter(supportFragmentManager, fragments);
+        ViewPagerAdapter adapter = new ViewPagerAdapter(fragmentManager, fragmentList);
         mViewPager.setAdapter(adapter);
+        mViewPager.setOffscreenPageLimit(3);
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -378,7 +304,7 @@ public class NavigitionBar extends LinearLayout {
 
             //提示红点
             RelativeLayout.LayoutParams hintPointParams = (RelativeLayout.LayoutParams) hintPoint.getLayoutParams();
-            hintPointParams.topMargin = (int) redPointTop;
+            hintPointParams.topMargin = (int) hintPointTop;
             hintPointParams.width = (int) hintPointSize;
             hintPointParams.height = (int) hintPointSize;
             hintPointParams.leftMargin = (int) hintPointLeft;
@@ -404,8 +330,8 @@ public class NavigitionBar extends LinearLayout {
             itemView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (mOnItemClickListener != null)
-                        mOnItemClickListener.onItemClickEvent(view, view.getId());
+                    if (onItemClickListener != null)
+                        onItemClickListener.onItemClickEvent(view, view.getId());
                     mViewPager.setCurrentItem(view.getId(), smoothScroll);
                 }
             });
@@ -413,7 +339,7 @@ public class NavigitionBar extends LinearLayout {
             LayoutParams textParams = (LayoutParams) text.getLayoutParams();
             textParams.topMargin = (int) tabTextTop;
             text.setLayoutParams(textParams);
-            text.setText(tabText[i]);
+            text.setText(titleItems[i]);
             text.setTextSize(SmallUtil.px2sp(getContext(), tabTextSize));
 
 
@@ -422,38 +348,14 @@ public class NavigitionBar extends LinearLayout {
         }
 
         selectPosition(0);
-
-
     }
 
-
-    /**
-     * @param tabText                Tab文字
-     * @param normalIcon             未选中Tab图标
-     * @param selectIcon             选中时图标
-     * @param fragments              Fragment集合
-     * @param supportFragmentManager 必传
-     * @param anim                   点击时Tab的动画
-     * @param smoothScroll           ViewPager滑动动画
-     * @param onItemClickListener    点击Tab的监听
-     */
-    public void setAddData(String[] tabText, int[] normalIcon, int[] selectIcon, List<Fragment> fragments, int addIcon,
-                           FragmentManager supportFragmentManager, Anim anim, final boolean smoothScroll,
-                           final NavigitionBar.OnItemClickListener onItemClickListener, final NavigitionBar.OnAddClickListener onAddClickListener) {
-        if ((tabText.length != normalIcon.length) || (tabText.length != selectIcon.length) || (normalIcon.length != selectIcon.length))
+    public void buildAddNavigition() {
+        if ((titleItems.length != normalIconItems.length) || (titleItems.length != selectIconItems.length) || (normalIconItems.length != selectIconItems.length))
             return;
-
-        this.mOnItemClickListener = onItemClickListener;
-        this.onAddClickListener = onAddClickListener;
-        if (anim != null)
-            this.anim = anim.getYoyo();
-        tabCount = tabText.length + 1;
+        tabCount = titleItems.length + 1;
         int index = 0;
 
-        this.normalIcon = normalIcon;
-        this.selectIcon = selectIcon;
-        this.smoothScroll = smoothScroll;
-        addImageRes = addIcon;
 
         hintPointList.clear();
         hintPointList.clear();
@@ -463,7 +365,7 @@ public class NavigitionBar extends LinearLayout {
 
         navigitionLayout.removeAllViews();
 
-        ViewPagerAdapter adapter = new ViewPagerAdapter(supportFragmentManager, fragments);
+        ViewPagerAdapter adapter = new ViewPagerAdapter(fragmentManager, fragmentList);
         mViewPager.setOffscreenPageLimit(3);
         mViewPager.setAdapter(adapter);
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -520,8 +422,8 @@ public class NavigitionBar extends LinearLayout {
                 itemView.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (mOnItemClickListener != null)
-                            mOnItemClickListener.onItemClickEvent(view, view.getId());
+                        if (onItemClickListener != null)
+                            onItemClickListener.onItemClickEvent(view, view.getId());
                         mViewPager.setCurrentItem(view.getId(), smoothScroll);
                     }
                 });
@@ -529,7 +431,7 @@ public class NavigitionBar extends LinearLayout {
                 LayoutParams textParams = (LayoutParams) text.getLayoutParams();
                 textParams.topMargin = (int) tabTextTop;
                 text.setLayoutParams(textParams);
-                text.setText(tabText[index]);
+                text.setText(titleItems[index]);
                 text.setTextSize(SmallUtil.px2sp(getContext(), tabTextSize));
 
 
@@ -537,7 +439,7 @@ public class NavigitionBar extends LinearLayout {
 
                 //提示红点
                 RelativeLayout.LayoutParams hintPointParams = (RelativeLayout.LayoutParams) hintPoint.getLayoutParams();
-                hintPointParams.topMargin = (int) redPointTop;
+                hintPointParams.topMargin = (int) hintPointTop;
                 hintPointParams.width = (int) hintPointSize;
                 hintPointParams.height = (int) hintPointSize;
                 hintPointParams.leftMargin = (int) hintPointLeft;
@@ -575,13 +477,13 @@ public class NavigitionBar extends LinearLayout {
 
         ImageView addImage = new ImageView(getContext());
         RelativeLayout.LayoutParams imageParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        imageParams.width = (int) addImageSize;
-        imageParams.height = (int) addImageSize;
+        imageParams.width = (int) addIconSize;
+        imageParams.height = (int) addIconSize;
         //imageParams.bottomMargin = SmallUtil.dip2px(getContext(),100);
         imageParams.addRule(RelativeLayout.CENTER_IN_PARENT);
         addImage.setLayoutParams(imageParams);
 
-        addImage.setImageResource(addImageRes);
+        addImage.setImageResource(addIcon);
         addImage.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -603,30 +505,21 @@ public class NavigitionBar extends LinearLayout {
 
         for (int i = 0; i < imageViewList.size(); i++) {
             if (i == 0) {
-                imageViewList.get(i).setImageResource(selectIcon[i]);
+                imageViewList.get(i).setImageResource(selectIconItems[i]);
                 textViewList.get(i).setTextColor(selectTextColor);
             } else {
-                imageViewList.get(i).setImageResource(normalIcon[i]);
+                imageViewList.get(i).setImageResource(normalIconItems[i]);
                 textViewList.get(i).setTextColor(normalTextColor);
             }
         }
     }
 
-    /*  public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-          mOnItemClickListener = onItemClickListener;
-          if (tabCount < 1) {
-              return;
-          }
-          for (int i = 0; i < tabCount; i++) {
-              final int finalI = i;
-              navigitionLayout.getChildAt(i).setOnClickListener(new OnClickListener() {
-                  @Override
-                  public void onClick(View view) {
-                      mOnItemClickListener.onItemClickEvent(finalI);
-                  }
-              });
-          }
-      }*/
+
+    public CustomViewPager getmViewPager() {
+        return mViewPager;
+    }
+
+
     public void setAddViewLayout(View addViewLayout) {
         FrameLayout.LayoutParams addParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         this.addViewLayout.addView(addViewLayout, addParams);
@@ -663,10 +556,10 @@ public class NavigitionBar extends LinearLayout {
             if (i == position) {
                 if (anim != null)
                     YoYo.with(anim).duration(300).playOn(tabList.get(i));
-                imageViewList.get(i).setImageResource(selectIcon[i]);
+                imageViewList.get(i).setImageResource(selectIconItems[i]);
                 textViewList.get(i).setTextColor(selectTextColor);
             } else {
-                imageViewList.get(i).setImageResource(normalIcon[i]);
+                imageViewList.get(i).setImageResource(normalIconItems[i]);
                 textViewList.get(i).setTextColor(normalTextColor);
             }
         }
@@ -738,8 +631,274 @@ public class NavigitionBar extends LinearLayout {
         void OnAddClickEvent(View view);
     }
 
-  /*  //双击事件
-    interface OnDoubleClickListener {
-        void onDoubleClickEvent(int position);
-    }*/
+
+    public EasyNavigitionBar addLayoutHeight(int addLayoutHeight) {
+        this.addLayoutHeight = addLayoutHeight;
+        return this;
+    }
+
+    public EasyNavigitionBar addIcon(int addIcon) {
+        this.addIcon = addIcon;
+        return this;
+    }
+
+    public EasyNavigitionBar addIconSize(int addIconSize) {
+        this.addIconSize = addIconSize;
+        return this;
+    }
+
+    public EasyNavigitionBar onAddClickListener(EasyNavigitionBar.OnAddClickListener onAddClickListener) {
+        this.onAddClickListener = onAddClickListener;
+        return this;
+    }
+
+
+    public EasyNavigitionBar navigitionBackground(int navigitionBackground) {
+        this.navigitionBackground = navigitionBackground;
+        return this;
+    }
+
+    public EasyNavigitionBar navigitionHeight(int navigitionHeight) {
+        this.navigitionHeight = navigitionHeight;
+        return this;
+    }
+
+    public EasyNavigitionBar normalTextColor(int normalTextColor) {
+        this.normalTextColor = normalTextColor;
+        return this;
+    }
+
+    public EasyNavigitionBar selectTextColor(int selectTextColor) {
+        this.selectTextColor = selectTextColor;
+        return this;
+    }
+
+    public EasyNavigitionBar lineHeight(int lineHeight) {
+        this.lineHeight = lineHeight;
+        return this;
+    }
+
+    public EasyNavigitionBar lineColor(int lineColor) {
+        this.lineColor = lineColor;
+        return this;
+    }
+
+    public EasyNavigitionBar tabTextSize(int tabTextSize) {
+        this.tabTextSize = tabTextSize;
+        return this;
+    }
+
+    public EasyNavigitionBar tabTextTop(int tabTextTop) {
+        this.tabTextTop = tabTextTop;
+        return this;
+    }
+
+    public EasyNavigitionBar msgPointTextSize(int msgPointTextSize) {
+        this.msgPointTextSize = msgPointTextSize;
+        return this;
+    }
+
+    public EasyNavigitionBar msgPointSize(int msgPointSize) {
+        this.msgPointSize = msgPointSize;
+        return this;
+    }
+
+    public EasyNavigitionBar msgPointLeft(int msgPointLeft) {
+        this.msgPointLeft = msgPointLeft;
+        return this;
+    }
+
+    public EasyNavigitionBar msgPointTop(int msgPointTop) {
+        this.msgPointTop = msgPointTop;
+        return this;
+    }
+
+
+    public EasyNavigitionBar hintPointSize(int hintPointSize) {
+        this.hintPointSize = hintPointSize;
+        return this;
+    }
+
+    public EasyNavigitionBar hintPointLeft(int hintPointLeft) {
+        this.hintPointLeft = hintPointLeft;
+        return this;
+    }
+
+    public EasyNavigitionBar hintPointTop(int hintPointTop) {
+        this.hintPointTop = hintPointTop;
+        return this;
+    }
+
+
+    public EasyNavigitionBar titleItems(String[] titleItems) {
+        this.titleItems = titleItems;
+        return this;
+    }
+
+    public EasyNavigitionBar normalIconItems(int[] normalIconItems) {
+        this.normalIconItems = normalIconItems;
+        return this;
+    }
+
+    public EasyNavigitionBar selectIconItems(int[] selectIconItems) {
+        this.selectIconItems = selectIconItems;
+        return this;
+    }
+
+    public EasyNavigitionBar fragmentList(List<Fragment> fragmentList) {
+        this.fragmentList = fragmentList;
+        return this;
+    }
+
+    public EasyNavigitionBar fragmentManager(FragmentManager fragmentManager) {
+        this.fragmentManager = fragmentManager;
+        return this;
+    }
+
+    public EasyNavigitionBar Anim(Anim anim) {
+        this.anim = anim.getYoyo();
+        return this;
+    }
+
+    public EasyNavigitionBar smoothScroll(boolean smoothScroll) {
+        this.smoothScroll = smoothScroll;
+        return this;
+    }
+
+    public EasyNavigitionBar isAdd(boolean isAdd) {
+        this.isAdd = isAdd;
+        return this;
+    }
+
+    public EasyNavigitionBar onItemListener(EasyNavigitionBar.OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+        return this;
+    }
+
+
+    public EasyNavigitionBar iconSize(int iconSize) {
+        this.iconSize = iconSize;
+        return this;
+    }
+
+
+    public String[] getTitleItems() {
+        return titleItems;
+    }
+
+    public int[] getNormalIconItems() {
+        return normalIconItems;
+    }
+
+    public int[] getSelectIconItems() {
+        return selectIconItems;
+    }
+
+    public List<Fragment> getFragmentList() {
+        return fragmentList;
+    }
+
+    public FragmentManager getFragmentManager() {
+        return fragmentManager;
+    }
+
+    public Techniques getAnim() {
+        return anim;
+    }
+
+    public boolean isSmoothScroll() {
+        return smoothScroll;
+    }
+
+    public boolean isAdd() {
+        return isAdd;
+    }
+
+    public EasyNavigitionBar.OnItemClickListener getOnItemClickListener() {
+        return onItemClickListener;
+    }
+
+    public int getIconSize() {
+        return iconSize;
+    }
+
+
+    public float getHintPointSize() {
+        return hintPointSize;
+    }
+
+    public float getHintPointLeft() {
+        return hintPointLeft;
+    }
+
+    public float getHintPointTop() {
+        return hintPointTop;
+    }
+
+
+    public float getMsgPointTextSize() {
+        return msgPointTextSize;
+    }
+
+    public float getMsgPointSize() {
+        return msgPointSize;
+    }
+
+    public float getMsgPointLeft() {
+        return msgPointLeft;
+    }
+
+    public float getMsgPointTop() {
+        return msgPointTop;
+    }
+
+    public float getTabTextTop() {
+        return tabTextTop;
+    }
+
+    public float getTabTextSize() {
+        return tabTextSize;
+    }
+
+    public int getNormalTextColor() {
+        return normalTextColor;
+    }
+
+    public int getSelectTextColor() {
+        return selectTextColor;
+    }
+
+    public float getLineHeight() {
+        return lineHeight;
+    }
+
+    public int getLineColor() {
+        return lineColor;
+    }
+
+    public EasyNavigitionBar.OnAddClickListener getOnAddClickListener() {
+        return onAddClickListener;
+    }
+
+    public float getAddIconSize() {
+        return addIconSize;
+    }
+
+    public int getAddIcon() {
+        return addIcon;
+    }
+
+    public float getAddLayoutHeight() {
+        return addLayoutHeight;
+    }
+
+    public int getNavigitionBackground() {
+        return navigitionBackground;
+    }
+
+    public float getNavigitionHeight() {
+        return navigitionHeight;
+    }
+
+
 }

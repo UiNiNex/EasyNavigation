@@ -1,21 +1,12 @@
 package com.next.easynavigitiondemo.ui;
 
-import android.animation.Animator;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.AnimationUtils;
-import android.view.animation.TranslateAnimation;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
-import com.daimajia.androidanimations.library.Techniques;
-import com.daimajia.androidanimations.library.YoYo;
 import com.next.easynavigition.constant.Anim;
-import com.next.easynavigition.view.NavigitionBar;
+import com.next.easynavigition.view.EasyNavigitionBar;
+import com.next.easynavigition.view.NavigitionBuilder;
 import com.next.easynavigitiondemo.R;
 
 import java.util.ArrayList;
@@ -23,7 +14,7 @@ import java.util.List;
 
 public class NoAddActivity extends AppCompatActivity {
 
-    private NavigitionBar navigitionBar;
+    private EasyNavigitionBar navigitionBar;
 
     private String[] tabText = {"首页", "发现", "消息", "我的"};
     //未选中icon
@@ -45,18 +36,27 @@ public class NoAddActivity extends AppCompatActivity {
         fragments.add(new FirstFragment());
         fragments.add(new SecondFragment());
 
-        navigitionBar.setData(tabText, normalIcon, selectIcon, fragments, getSupportFragmentManager(), Anim.ZoomIn, new NavigitionBar.OnItemClickListener() {
-            @Override
-            public void onItemClickEvent(View view, int position) {
-                Toast.makeText(NoAddActivity.this, "您点击了第" + (position + 1) + "个Tab", Toast.LENGTH_SHORT).show();
-            }
-        });
+        navigitionBar
+                .titleItems(tabText)
+                .normalIconItems(normalIcon)
+                .selectIconItems(selectIcon)
+                .fragmentList(fragments)
+                .fragmentManager(getSupportFragmentManager())
+                .onItemListener(new EasyNavigitionBar.OnItemClickListener() {
+                    @Override
+                    public void onItemClickEvent(View view, int position) {
 
-        navigitionBar.getmViewPager().setCanScroll(true);
+                    }
+                })
+                .Anim(Anim.ZoomIn)
+                .build();
+
+        // navigitionBar.setBuilder(builder);
+
 
     }
 
-    public NavigitionBar getNavigitionBar() {
+    public EasyNavigitionBar getNavigitionBar() {
         return navigitionBar;
     }
 

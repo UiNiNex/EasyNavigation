@@ -26,6 +26,6 @@ public class DemoListActivity extends AppCompatActivity {
     }
 
     public void AddNavigitionBar(View view) {
-        startActivity(new Intent(DemoListActivity.this, MainActivity.class));
+        startActivity(new Intent(DemoListActivity.this, AddActivity.class));
     }
 }

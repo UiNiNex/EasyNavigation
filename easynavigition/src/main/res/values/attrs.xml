@@ -1,47 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--自定义ViewPager+fragment实现-->
-    <declare-styleable name="NavigitionBar">
+    <declare-styleable name="EasyNavigitionBar">
         <!--底部导航栏高度-->
-        <attr name="navigition_height" format="dimension" />
+        <attr name="navigitionHeight" format="dimension" />
         <!--底部导航栏背景-->
-        <attr name="navigition_background" format="color" />
+        <attr name="navigitionBackground" format="color" />
         <!--Tab字体大小-->
-        <attr name="tab_textsize" format="dimension" />
+        <attr name="tabTextSize" format="dimension" />
         <!--Tab文字距Tab图标的距离-->
-        <attr name="tab_text_top" format="dimension" />
+        <attr name="tabTextTop" format="dimension" />
         <!--Tab图标大小-->
-        <attr name="tab_icon_size" format="dimension" />
+        <attr name="tabIconSize" format="dimension" />
         <!--Tab未选中字体颜色-->
-        <attr name="tab_normal_color" format="color" />
+        <attr name="tabNormalColor" format="color" />
         <!--Tab选中字体颜色-->
-        <attr name="tab_select_color" format="color" />
+        <attr name="tabSelectColor" format="color" />
         <!--提示红点的大小-->
-        <attr name="hint_point_size" format="dimension" />
+        <attr name="hintPointSize" format="dimension" />
         <!--消息红点的大小-->
-        <attr name="msg_point_size" format="dimension" />
+        <attr name="msgPointSize" format="dimension" />
         <!--提示红点距Tab图标的距离-->
-        <attr name="hint_point_left" format="dimension" />
+        <attr name="hintPointLeft" format="dimension" />
         <!--消息红点距Tab图标的距离-->
-        <attr name="msg_point_left" format="dimension" />
+        <attr name="msgPointLeft" format="dimension" />
         <!--提示红点距离顶部的距离-->
-        <attr name="red_point_top" format="dimension" />
+        <attr name="hintPointTop" format="dimension" />
         <!--消息红点距顶部的距离-->
-        <attr name="msg_point_top" format="dimension" />
+        <attr name="msgPointTop" format="dimension" />
         <!--消息红点数字字体大小-->
-        <attr name="msg_point_textsize" format="dimension" />
+        <attr name="msgPointTextSize" format="dimension" />
         <!--分割线高度-->
-        <attr name="line_height" format="dimension" />
+        <attr name="lineHeight" format="dimension" />
         <!--分割线颜色-->
-        <attr name="line_color" format="color" />
+        <attr name="lineColor" format="color" />
 
 
         <!--中间图片的大小-->
-        <attr name="add_image_size" format="dimension" />
+        <attr name="addImageSize" format="dimension" />
         <!--中间图片icon-->
-        <attr name="add_image_res" format="integer" />
+        <attr name="addIconRes" format="integer" />
         <!--底部导航栏和加号的高度  加号会居中-->
-        <attr name="addNavigition_height" format="dimension" />
+        <attr name="addLayoutHeight" format="dimension" />
     </declare-styleable>
 
 </resources>
