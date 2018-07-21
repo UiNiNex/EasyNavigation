@@ -44,15 +44,12 @@ public class NoAddActivity extends AppCompatActivity {
                 .fragmentManager(getSupportFragmentManager())
                 .onItemListener(new EasyNavigitionBar.OnItemClickListener() {
                     @Override
-                    public void onItemClickEvent(View view, int position) {
-
+                    public boolean onItemClickEvent(View view, int position) {
+                        return false;
                     }
                 })
                 .Anim(Anim.ZoomIn)
                 .build();
-
-        // navigitionBar.setBuilder(builder);
-
 
     }
 

@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.next.easynavigition.constant.Anim;
 import com.next.easynavigition.utils.SmallUtil;
@@ -64,7 +65,12 @@ public class AddActivity extends AppCompatActivity {
                 .fragmentManager(getSupportFragmentManager())
                 .onItemListener(new EasyNavigitionBar.OnItemClickListener() {
                     @Override
-                    public void onItemClickEvent(View view, int position) {
+                    public boolean onItemClickEvent(View view, int position) {
+                        if (position == 3) {
+                            Toast.makeText(AddActivity.this, "请先登录", Toast.LENGTH_SHORT).show();
+                            return true;
+                        }
+                        return false;
                         // Toast.makeText(AddActivity.this, "您点击了第" + (position + 1) + "个Tab", Toast.LENGTH_SHORT).show();
                     }
                 })
@@ -78,8 +84,6 @@ public class AddActivity extends AppCompatActivity {
                         showMunu();
                     }
                 }).build();
-
-        // navigitionBar.setBuilder(builder);
 
         navigitionBar.setAddViewLayout(createWeiboView());
 

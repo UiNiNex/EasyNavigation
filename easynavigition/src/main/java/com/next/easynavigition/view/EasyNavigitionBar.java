@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -32,7 +33,6 @@ import java.util.List;
 
 public class EasyNavigitionBar extends LinearLayout {
 
-    private Context context;
 
     //private OnDoubleClickListener mOnDoubleClickListener;
     private RelativeLayout containerLayout;
@@ -156,8 +156,6 @@ public class EasyNavigitionBar extends LinearLayout {
     }
 
     private void initViews(Context context, AttributeSet attrs) {
-
-        this.context = context;
 
         mLinearLayout = (RelativeLayout) View.inflate(context, R.layout.container_layout, null);
         addViewLayout = mLinearLayout.findViewById(R.id.add_view_ll);
@@ -330,9 +328,13 @@ public class EasyNavigitionBar extends LinearLayout {
             itemView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (onItemClickListener != null)
-                        onItemClickListener.onItemClickEvent(view, view.getId());
-                    mViewPager.setCurrentItem(view.getId(), smoothScroll);
+                    if (onItemClickListener != null) {
+                        if (!onItemClickListener.onItemClickEvent(view, view.getId())) {
+                            mViewPager.setCurrentItem(view.getId(), smoothScroll);
+                        }
+                    } else {
+                        mViewPager.setCurrentItem(view.getId(), smoothScroll);
+                    }
                 }
             });
 
@@ -420,11 +422,14 @@ public class EasyNavigitionBar extends LinearLayout {
                 textViewList.add(text);
 
                 itemView.setOnClickListener(new OnClickListener() {
-                    @Override
                     public void onClick(View view) {
-                        if (onItemClickListener != null)
-                            onItemClickListener.onItemClickEvent(view, view.getId());
-                        mViewPager.setCurrentItem(view.getId(), smoothScroll);
+                        if (onItemClickListener != null) {
+                            if (!onItemClickListener.onItemClickEvent(view, view.getId())) {
+                                mViewPager.setCurrentItem(view.getId(), smoothScroll);
+                            }
+                        } else {
+                            mViewPager.setCurrentItem(view.getId(), smoothScroll);
+                        }
                     }
                 });
 
@@ -488,15 +493,6 @@ public class EasyNavigitionBar extends LinearLayout {
             @Override
             public void onClick(View view) {
                 onAddClickListener.OnAddClickEvent(view);
-               /* if (view.getTag()==null||(int)view.getTag() == 0) {
-                    //view.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.anim_rotate_left));
-                    view.setTag(1);
-                    addViewLayout.setVisibility(VISIBLE);
-                } else {
-                    //view.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.anim_rotate_right));
-                    view.setTag(0);
-                    addViewLayout.setVisibility(GONE);
-                }*/
             }
         });
 
@@ -623,12 +619,12 @@ public class EasyNavigitionBar extends LinearLayout {
 
 
     public interface OnItemClickListener {
-        void onItemClickEvent(View view, int position);
+        boolean onItemClickEvent(View view, int position);
     }
 
 
     public interface OnAddClickListener {
-        void OnAddClickEvent(View view);
+        boolean OnAddClickEvent(View view);
     }
 
 
@@ -899,6 +895,5 @@ public class EasyNavigitionBar extends LinearLayout {
     public float getNavigitionHeight() {
         return navigitionHeight;
     }
-
 
 }
