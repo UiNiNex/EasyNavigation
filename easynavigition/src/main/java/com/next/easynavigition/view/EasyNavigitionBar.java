@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -22,7 +21,7 @@ import com.daimajia.androidanimations.library.YoYo;
 import com.next.easynavigition.R;
 import com.next.easynavigition.adapter.ViewPagerAdapter;
 import com.next.easynavigition.constant.Anim;
-import com.next.easynavigition.utils.SmallUtil;
+import com.next.easynavigition.utils.NavigitionUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,18 +33,15 @@ import java.util.List;
 public class EasyNavigitionBar extends LinearLayout {
 
 
-    //private OnDoubleClickListener mOnDoubleClickListener;
-    private RelativeLayout containerLayout;
+    private RelativeLayout AddContainerLayout;
 
     //Tab数量
     private int tabCount = 0;
 
     private LinearLayout navigitionLayout;
-    private RelativeLayout mLinearLayout;
+    private RelativeLayout contentView;
     //分割线
-    private View common_horizontal_line;
-
-    private int doubleClickPositon = -1;
+    private View lineView;
 
     //红点集合
     private List<View> hintPointList = new ArrayList<>();
@@ -83,8 +79,6 @@ public class EasyNavigitionBar extends LinearLayout {
     private Techniques anim = null;
     //ViewPager切换动画
     private boolean smoothScroll = false;
-    //是否添加中间的按钮
-    private boolean isAdd;
     //图标大小
     private int iconSize = 20;
 
@@ -95,7 +89,7 @@ public class EasyNavigitionBar extends LinearLayout {
     //提示红点距顶部的距离
     private float hintPointTop = 5;
 
-    private EasyNavigitionBar.OnItemClickListener onItemClickListener;
+    private EasyNavigitionBar.OnTabClickListener onTabClickListener;
     //消息红点字体大小
     private float msgPointTextSize = 9;
     //消息红点大小
@@ -120,12 +114,36 @@ public class EasyNavigitionBar extends LinearLayout {
     private int navigitionBackground = Color.parseColor("#ffffff");
     private float navigitionHeight = 52;
 
+    private ImageView.ScaleType scaleType = ImageView.ScaleType.CENTER_INSIDE;
+
+    private boolean canScroll;
+    private ViewPagerAdapter adapter;
+
 
     //Add
     private EasyNavigitionBar.OnAddClickListener onAddClickListener;
     private float addIconSize = 36;
     private int addIcon;
     private float addLayoutHeight = navigitionHeight;
+    public static final int MODE_NORMAL = 0;
+    public static final int MODE_ADD = 1;
+
+    private float addIconBottom = 10;
+
+    //RULE_CENTER 居中只需调节addLayoutHeight 默认和navigitionHeight相等 此时addIconBottom属性无效
+    //RULE_BOTTOM addLayoutHeight属性无效、自适应、只需调节addIconBottom距底部的距离
+    private int addIconRule = RULE_CENTER;
+
+    public static final int RULE_CENTER = 0;
+    public static final int RULE_BOTTOM = 1;
+
+    //true  ViewPager在Navigition上面
+    //false  ViewPager和Navigition重叠
+    private boolean hasPadding = true;
+
+
+    //1、普通的Tab 2、中间带按钮（如加号）3、
+    private int mode;
 
 
     public EasyNavigitionBar(Context context) {
@@ -137,32 +155,17 @@ public class EasyNavigitionBar extends LinearLayout {
     public EasyNavigitionBar(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
 
-        init();
-
         initViews(context, attrs);
-    }
-
-    private void init() {
-
-       /* detector = new GestureDetector(new GestureDetector.SimpleOnGestureListener() {
-
-            @Override
-            public boolean onDoubleTap(MotionEvent e) {
-                if (mOnDoubleClickListener != null)
-                    mOnDoubleClickListener.onDoubleClickEvent(doubleClickPositon);
-                return super.onDoubleTap(e);
-            }
-        });*/
     }
 
     private void initViews(Context context, AttributeSet attrs) {
 
-        mLinearLayout = (RelativeLayout) View.inflate(context, R.layout.container_layout, null);
-        addViewLayout = mLinearLayout.findViewById(R.id.add_view_ll);
-        containerLayout = mLinearLayout.findViewById(R.id.container_rl);
-        navigitionLayout = mLinearLayout.findViewById(R.id.navigition_ll);
-        mViewPager = mLinearLayout.findViewById(R.id.mViewPager);
-        common_horizontal_line = mLinearLayout.findViewById(R.id.common_horizontal_line);
+        contentView = (RelativeLayout) View.inflate(context, R.layout.container_layout, null);
+        addViewLayout = contentView.findViewById(R.id.add_view_ll);
+        AddContainerLayout = contentView.findViewById(R.id.add_rl);
+        navigitionLayout = contentView.findViewById(R.id.navigition_ll);
+        mViewPager = contentView.findViewById(R.id.mViewPager);
+        lineView = contentView.findViewById(R.id.common_horizontal_line);
 
 
         toDp();
@@ -171,48 +174,61 @@ public class EasyNavigitionBar extends LinearLayout {
         TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.EasyNavigitionBar);
         parseStyle(attributes);
 
-        addView(mLinearLayout);
+        addView(contentView);
     }
 
     private void parseStyle(TypedArray attributes) {
         if (attributes != null) {
-            navigitionHeight = attributes.getDimension(R.styleable.EasyNavigitionBar_navigitionHeight, navigitionHeight);
-            navigitionBackground = attributes.getColor(R.styleable.EasyNavigitionBar_navigitionBackground, navigitionBackground);
-            navigitionLayout.setBackgroundColor(navigitionBackground);
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) navigitionLayout.getLayoutParams();
-            params.height = (int) navigitionHeight;
-            navigitionLayout.setLayoutParams(params);
-
-            tabTextSize = attributes.getDimension(R.styleable.EasyNavigitionBar_tabTextSize, tabTextSize);
-            tabTextTop = attributes.getDimension(R.styleable.EasyNavigitionBar_tabTextTop, tabTextTop);
-            iconSize = (int) attributes.getDimension(R.styleable.EasyNavigitionBar_tabIconSize, iconSize);
-            hintPointSize = attributes.getDimension(R.styleable.EasyNavigitionBar_hintPointSize, hintPointSize);
-            msgPointSize = attributes.getDimension(R.styleable.EasyNavigitionBar_msgPointSize, msgPointSize);
-            hintPointLeft = attributes.getDimension(R.styleable.EasyNavigitionBar_hintPointLeft, hintPointLeft);
-            msgPointTop = attributes.getDimension(R.styleable.EasyNavigitionBar_msgPointTop, msgPointTop);
-            hintPointTop = attributes.getDimension(R.styleable.EasyNavigitionBar_hintPointTop, hintPointTop);
-
-            msgPointLeft = attributes.getDimension(R.styleable.EasyNavigitionBar_msgPointLeft, msgPointLeft);
-            msgPointTextSize = attributes.getDimension(R.styleable.EasyNavigitionBar_msgPointTextSize, msgPointTextSize);
-            addIconSize = attributes.getDimension(R.styleable.EasyNavigitionBar_addImageSize, addIconSize);
-            addIcon = attributes.getInteger(R.styleable.EasyNavigitionBar_addIconRes, addIcon);
+            navigitionHeight = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_navigitionHeight, navigitionHeight);
+            navigitionBackground = attributes.getColor(R.styleable.EasyNavigitionBar_Easy_navigitionBackground, navigitionBackground);
 
 
-            lineHeight = attributes.getDimension(R.styleable.EasyNavigitionBar_lineHeight, lineHeight);
-            lineColor = attributes.getColor(R.styleable.EasyNavigitionBar_lineColor, lineColor);
-            common_horizontal_line.setBackgroundColor(lineColor);
+            tabTextSize = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_tabTextSize, tabTextSize);
+            tabTextTop = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_tabTextTop, tabTextTop);
+            iconSize = (int) attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_tabIconSize, iconSize);
+            hintPointSize = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_hintPointSize, hintPointSize);
+            msgPointSize = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_msgPointSize, msgPointSize);
+            hintPointLeft = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_hintPointLeft, hintPointLeft);
+            msgPointTop = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_msgPointTop, msgPointTop);
+            hintPointTop = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_hintPointTop, hintPointTop);
 
-            addLayoutHeight = attributes.getDimension(R.styleable.EasyNavigitionBar_addLayoutHeight, navigitionHeight + lineHeight);
-            LayoutParams addLayoutParams = (LayoutParams) containerLayout.getLayoutParams();
-            addLayoutParams.height = (int) addLayoutHeight;
-            containerLayout.setLayoutParams(addLayoutParams);
+            msgPointLeft = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_msgPointLeft, msgPointLeft);
+            msgPointTextSize = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_msgPointTextSize, msgPointTextSize);
+            addIconSize = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_addIconSize, addIconSize);
+            addIcon = attributes.getInteger(R.styleable.EasyNavigitionBar_Easy_addIconRes, addIcon);
+            addIconBottom = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_addIconBottom, addIconBottom);
 
-            RelativeLayout.LayoutParams lineParams = (RelativeLayout.LayoutParams) common_horizontal_line.getLayoutParams();
-            lineParams.height = (int) lineHeight;
-            common_horizontal_line.setLayoutParams(lineParams);
 
-            normalTextColor = attributes.getColor(R.styleable.EasyNavigitionBar_tabNormalColor, normalTextColor);
-            selectTextColor = attributes.getColor(R.styleable.EasyNavigitionBar_tabSelectColor, selectTextColor);
+            lineHeight = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_lineHeight, lineHeight);
+            lineColor = attributes.getColor(R.styleable.EasyNavigitionBar_Easy_lineColor, lineColor);
+
+
+            addLayoutHeight = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_addLayoutHeight, navigitionHeight + lineHeight);
+
+            normalTextColor = attributes.getColor(R.styleable.EasyNavigitionBar_Easy_tabNormalColor, normalTextColor);
+            selectTextColor = attributes.getColor(R.styleable.EasyNavigitionBar_Easy_tabSelectColor, selectTextColor);
+
+            int type = attributes.getInt(R.styleable.EasyNavigitionBar_Easy_scaleType, 0);
+            if (type == 0) {
+                scaleType = ImageView.ScaleType.CENTER_INSIDE;
+            } else if (type == 1) {
+                scaleType = ImageView.ScaleType.CENTER_CROP;
+            } else if (type == 2) {
+                scaleType = ImageView.ScaleType.CENTER;
+            } else if (type == 3) {
+                scaleType = ImageView.ScaleType.FIT_CENTER;
+            } else if (type == 4) {
+                scaleType = ImageView.ScaleType.FIT_END;
+            } else if (type == 5) {
+                scaleType = ImageView.ScaleType.FIT_START;
+            } else if (type == 6) {
+                scaleType = ImageView.ScaleType.FIT_XY;
+            } else if (type == 7) {
+                scaleType = ImageView.ScaleType.MATRIX;
+            }
+
+            addIconRule = attributes.getInt(R.styleable.EasyNavigitionBar_Easy_addIconRule, addIconRule);
+            hasPadding = attributes.getBoolean(R.styleable.EasyNavigitionBar_Easy_hasPadding, hasPadding);
 
             attributes.recycle();
         }
@@ -220,33 +236,73 @@ public class EasyNavigitionBar extends LinearLayout {
 
     //将dp、sp转换成px
     private void toDp() {
-        navigitionHeight = SmallUtil.dip2px(getContext(), navigitionHeight);
-        iconSize = SmallUtil.dip2px(getContext(), iconSize);
-        hintPointSize = SmallUtil.dip2px(getContext(), hintPointSize);
-        hintPointTop = SmallUtil.dip2px(getContext(), hintPointTop);
-        hintPointLeft = SmallUtil.dip2px(getContext(), hintPointLeft);
+        navigitionHeight = NavigitionUtil.dip2px(getContext(), navigitionHeight);
+        iconSize = NavigitionUtil.dip2px(getContext(), iconSize);
+        hintPointSize = NavigitionUtil.dip2px(getContext(), hintPointSize);
+        hintPointTop = NavigitionUtil.dip2px(getContext(), hintPointTop);
+        hintPointLeft = NavigitionUtil.dip2px(getContext(), hintPointLeft);
 
-        msgPointLeft = SmallUtil.dip2px(getContext(), msgPointLeft);
-        msgPointTop = SmallUtil.dip2px(getContext(), msgPointTop);
-        msgPointSize = SmallUtil.dip2px(getContext(), msgPointSize);
-        msgPointTextSize = SmallUtil.sp2px(getContext(), msgPointTextSize);
+        msgPointLeft = NavigitionUtil.dip2px(getContext(), msgPointLeft);
+        msgPointTop = NavigitionUtil.dip2px(getContext(), msgPointTop);
+        msgPointSize = NavigitionUtil.dip2px(getContext(), msgPointSize);
+        msgPointTextSize = NavigitionUtil.sp2px(getContext(), msgPointTextSize);
 
-        tabTextTop = SmallUtil.dip2px(getContext(), tabTextTop);
-        tabTextSize = SmallUtil.sp2px(getContext(), tabTextSize);
+        tabTextTop = NavigitionUtil.dip2px(getContext(), tabTextTop);
+        tabTextSize = NavigitionUtil.sp2px(getContext(), tabTextSize);
 
 
         //Add
-        addIconSize = SmallUtil.dip2px(getContext(), addIconSize);
-        addLayoutHeight = SmallUtil.dip2px(getContext(), addLayoutHeight);
+        addIconSize = NavigitionUtil.dip2px(getContext(), addIconSize);
+        addLayoutHeight = NavigitionUtil.dip2px(getContext(), addLayoutHeight);
+        addIconBottom = NavigitionUtil.dip2px(getContext(), addIconBottom);
     }
 
 
     public void build() {
-        if (isAdd) {
-            buildAddNavigition();
-        } else {
-            buildNavigition();
+
+        if (addLayoutHeight < navigitionHeight + lineHeight)
+            addLayoutHeight = navigitionHeight + lineHeight;
+
+        if (addIconRule == RULE_CENTER) {
+            RelativeLayout.LayoutParams addLayoutParams = (RelativeLayout.LayoutParams) AddContainerLayout.getLayoutParams();
+            addLayoutParams.height = (int) addLayoutHeight;
+            AddContainerLayout.setLayoutParams(addLayoutParams);
+        } else if (addIconRule == RULE_BOTTOM) {
+            RelativeLayout.LayoutParams addLayoutParams = (RelativeLayout.LayoutParams) AddContainerLayout.getLayoutParams();
+            if ((addIconSize + addIconBottom) > (navigitionHeight + 1))
+                addLayoutParams.height = (int) (addIconSize + addIconBottom);
+            else
+                addLayoutParams.height = (int) (navigitionHeight + 1);
+            AddContainerLayout.setLayoutParams(addLayoutParams);
         }
+
+
+        navigitionLayout.setBackgroundColor(navigitionBackground);
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) navigitionLayout.getLayoutParams();
+        params.height = (int) navigitionHeight;
+        navigitionLayout.setLayoutParams(params);
+
+
+        if (hasPadding) {
+            mViewPager.setPadding(0, 0, 0, (int) (navigitionHeight + lineHeight));
+        }
+
+        RelativeLayout.LayoutParams lineParams = (RelativeLayout.LayoutParams) lineView.getLayoutParams();
+        lineParams.height = (int) lineHeight;
+        lineView.setBackgroundColor(lineColor);
+        lineView.setLayoutParams(lineParams);
+
+        if (mode == 0) {
+            buildNavigition();
+        } else if (mode == 1) {
+            buildAddNavigition();
+        }
+        if (canScroll) {
+            getmViewPager().setCanScroll(true);
+        } else {
+            getmViewPager().setCanScroll(false);
+        }
+        select(0, false);
     }
 
     public void buildNavigition() {
@@ -263,7 +319,7 @@ public class EasyNavigitionBar extends LinearLayout {
 
         navigitionLayout.removeAllViews();
 
-        ViewPagerAdapter adapter = new ViewPagerAdapter(fragmentManager, fragmentList);
+        adapter = new ViewPagerAdapter(fragmentManager, fragmentList);
         mViewPager.setAdapter(adapter);
         mViewPager.setOffscreenPageLimit(3);
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -274,7 +330,7 @@ public class EasyNavigitionBar extends LinearLayout {
 
             @Override
             public void onPageSelected(int position) {
-                selectPosition(position);
+                select(position, true);
             }
 
             @Override
@@ -286,13 +342,14 @@ public class EasyNavigitionBar extends LinearLayout {
         for (int i = 0; i < tabCount; i++) {
             View itemView = View.inflate(getContext(), R.layout.navigition_tab_layout, null);
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-            params.width = SmallUtil.getScreenWidth(getContext()) / tabCount;
+            params.width = NavigitionUtil.getScreenWidth(getContext()) / tabCount;
 
             itemView.setLayoutParams(params);
             itemView.setId(i);
 
             TextView text = itemView.findViewById(R.id.tab_text_tv);
             ImageView icon = itemView.findViewById(R.id.tab_icon_iv);
+            icon.setScaleType(scaleType);
             LayoutParams iconParams = (LayoutParams) icon.getLayoutParams();
             iconParams.width = (int) iconSize;
             iconParams.height = (int) iconSize;
@@ -310,7 +367,7 @@ public class EasyNavigitionBar extends LinearLayout {
 
             //消息红点
             TextView msgPoint = itemView.findViewById(R.id.msg_point_tv);
-            msgPoint.setTextSize(SmallUtil.px2sp(getContext(), msgPointTextSize));
+            msgPoint.setTextSize(NavigitionUtil.px2sp(getContext(), msgPointTextSize));
             RelativeLayout.LayoutParams msgPointParams = (RelativeLayout.LayoutParams) msgPoint.getLayoutParams();
             msgPointParams.topMargin = (int) msgPointTop;
             msgPointParams.width = (int) msgPointSize;
@@ -328,8 +385,8 @@ public class EasyNavigitionBar extends LinearLayout {
             itemView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (onItemClickListener != null) {
-                        if (!onItemClickListener.onItemClickEvent(view, view.getId())) {
+                    if (onTabClickListener != null) {
+                        if (!onTabClickListener.onTabClickEvent(view, view.getId())) {
                             mViewPager.setCurrentItem(view.getId(), smoothScroll);
                         }
                     } else {
@@ -342,16 +399,16 @@ public class EasyNavigitionBar extends LinearLayout {
             textParams.topMargin = (int) tabTextTop;
             text.setLayoutParams(textParams);
             text.setText(titleItems[i]);
-            text.setTextSize(SmallUtil.px2sp(getContext(), tabTextSize));
+            text.setTextSize(NavigitionUtil.px2sp(getContext(), tabTextSize));
 
 
             tabList.add(itemView);
             navigitionLayout.addView(itemView);
         }
 
-        selectPosition(0);
     }
 
+    //构建中间带按钮的navigition
     public void buildAddNavigition() {
         if ((titleItems.length != normalIconItems.length) || (titleItems.length != selectIconItems.length) || (normalIconItems.length != selectIconItems.length))
             return;
@@ -367,7 +424,7 @@ public class EasyNavigitionBar extends LinearLayout {
 
         navigitionLayout.removeAllViews();
 
-        ViewPagerAdapter adapter = new ViewPagerAdapter(fragmentManager, fragmentList);
+        adapter = new ViewPagerAdapter(fragmentManager, fragmentList);
         mViewPager.setOffscreenPageLimit(3);
         mViewPager.setAdapter(adapter);
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -378,7 +435,7 @@ public class EasyNavigitionBar extends LinearLayout {
 
             @Override
             public void onPageSelected(int position) {
-                selectPosition(position);
+                select(position, true);
             }
 
             @Override
@@ -392,8 +449,7 @@ public class EasyNavigitionBar extends LinearLayout {
             if (i == tabCount / 2) {
                 RelativeLayout addLayout = new RelativeLayout(getContext());
                 RelativeLayout.LayoutParams addParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-                addParams.width = SmallUtil.getScreenWidth(getContext()) / tabCount;
-                //addParams.bottomMargin = SmallUtil.dip2px(getContext(),100);
+                addParams.width = NavigitionUtil.getScreenWidth(getContext()) / tabCount;
                 addLayout.setLayoutParams(addParams);
                 navigitionLayout.addView(addLayout);
             } else {
@@ -406,13 +462,14 @@ public class EasyNavigitionBar extends LinearLayout {
 
                 View itemView = View.inflate(getContext(), R.layout.navigition_tab_layout, null);
                 RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-                params.width = SmallUtil.getScreenWidth(getContext()) / tabCount;
+                params.width = NavigitionUtil.getScreenWidth(getContext()) / tabCount;
 
                 itemView.setLayoutParams(params);
                 itemView.setId(index);
 
                 TextView text = itemView.findViewById(R.id.tab_text_tv);
                 ImageView icon = itemView.findViewById(R.id.tab_icon_iv);
+                icon.setScaleType(scaleType);
                 LayoutParams iconParams = (LayoutParams) icon.getLayoutParams();
                 iconParams.width = (int) iconSize;
                 iconParams.height = (int) iconSize;
@@ -423,8 +480,8 @@ public class EasyNavigitionBar extends LinearLayout {
 
                 itemView.setOnClickListener(new OnClickListener() {
                     public void onClick(View view) {
-                        if (onItemClickListener != null) {
-                            if (!onItemClickListener.onItemClickEvent(view, view.getId())) {
+                        if (onTabClickListener != null) {
+                            if (!onTabClickListener.onTabClickEvent(view, view.getId())) {
                                 mViewPager.setCurrentItem(view.getId(), smoothScroll);
                             }
                         } else {
@@ -437,7 +494,7 @@ public class EasyNavigitionBar extends LinearLayout {
                 textParams.topMargin = (int) tabTextTop;
                 text.setLayoutParams(textParams);
                 text.setText(titleItems[index]);
-                text.setTextSize(SmallUtil.px2sp(getContext(), tabTextSize));
+                text.setTextSize(NavigitionUtil.px2sp(getContext(), tabTextSize));
 
 
                 View hintPoint = itemView.findViewById(R.id.red_point);
@@ -452,7 +509,7 @@ public class EasyNavigitionBar extends LinearLayout {
 
                 //消息红点
                 TextView msgPoint = itemView.findViewById(R.id.msg_point_tv);
-                msgPoint.setTextSize(SmallUtil.px2sp(getContext(), msgPointTextSize));
+                msgPoint.setTextSize(NavigitionUtil.px2sp(getContext(), msgPointTextSize));
                 RelativeLayout.LayoutParams msgPointParams = (RelativeLayout.LayoutParams) msgPoint.getLayoutParams();
                 msgPointParams.topMargin = (int) msgPointTop;
                 msgPointParams.width = (int) msgPointSize;
@@ -473,41 +530,38 @@ public class EasyNavigitionBar extends LinearLayout {
 
         RelativeLayout addLayout = new RelativeLayout(getContext());
         RelativeLayout.LayoutParams addParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        addParams.width = SmallUtil.getScreenWidth(getContext()) / tabCount;
-        //addParams.height = (int) addContainerHeight;
-        addParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-        // addLayout.setBackgroundResource(R.drawable.oval_white);
-        // addLayout.setPadding(SmallUtil.dip2px(getContext(),5),SmallUtil.dip2px(getContext(),5),SmallUtil.dip2px(getContext(),5),SmallUtil.dip2px(getContext(),5));
-        addLayout.setLayoutParams(addParams);
+        addParams.width = NavigitionUtil.getScreenWidth(getContext()) / tabCount;
+        if (addIconRule == RULE_CENTER) {
+            addParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+        } else if (addIconRule == RULE_BOTTOM) {
+            addParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+            addParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        }
 
         ImageView addImage = new ImageView(getContext());
         RelativeLayout.LayoutParams imageParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         imageParams.width = (int) addIconSize;
         imageParams.height = (int) addIconSize;
-        //imageParams.bottomMargin = SmallUtil.dip2px(getContext(),100);
-        imageParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-        addImage.setLayoutParams(imageParams);
+
+        if (addIconRule == RULE_CENTER) {
+            imageParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+        } else if (addIconRule == RULE_BOTTOM) {
+            imageParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+            imageParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            imageParams.bottomMargin = (int) addIconBottom;
+        }
 
         addImage.setImageResource(addIcon);
         addImage.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                onAddClickListener.OnAddClickEvent(view);
+                if (onAddClickListener != null)
+                    onAddClickListener.OnAddClickEvent(view);
             }
         });
 
         addLayout.addView(addImage, imageParams);
-        containerLayout.addView(addLayout, addParams);
-
-        for (int i = 0; i < imageViewList.size(); i++) {
-            if (i == 0) {
-                imageViewList.get(i).setImageResource(selectIconItems[i]);
-                textViewList.get(i).setTextColor(selectTextColor);
-            } else {
-                imageViewList.get(i).setImageResource(normalIconItems[i]);
-                textViewList.get(i).setTextColor(normalTextColor);
-            }
-        }
+        AddContainerLayout.addView(addLayout, addParams);
     }
 
 
@@ -524,33 +578,16 @@ public class EasyNavigitionBar extends LinearLayout {
     public ViewGroup getAddViewLayout() {
         return addViewLayout;
     }
-    /* public void setOnDoubleClickListener(OnDoubleClickListener mOnDoubleClickListener) {
-         this.mOnDoubleClickListener = mOnDoubleClickListener;
-         if (tabCount < 1) {
-             return;
-         }
-         for (int i = 0; i < tabCount; i++) {
-             final int finalI = i;
-             navigitionLayout.getChildAt(i).setOnTouchListener(new OnTouchListener() {
-                 @Override
-                 public boolean onTouch(View v, MotionEvent event) {
-                     doubleClickPositon = finalI;
-                     return detector.onTouchEvent(event);
-                 }
-             });
-         }
-     }
- */
 
     /**
-     * 选中第几项
+     * tab图标、文字变换
      *
      * @param position
      */
-    public void selectPosition(int position) {
+    private void select(int position, boolean showAnim) {
         for (int i = 0; i < imageViewList.size(); i++) {
             if (i == position) {
-                if (anim != null)
+                if (anim != null && showAnim)
                     YoYo.with(anim).duration(300).playOn(tabList.get(i));
                 imageViewList.get(i).setImageResource(selectIconItems[i]);
                 textViewList.get(i).setTextColor(selectTextColor);
@@ -559,6 +596,11 @@ public class EasyNavigitionBar extends LinearLayout {
                 textViewList.get(i).setTextColor(normalTextColor);
             }
         }
+    }
+
+
+    public void selectTab(int position) {
+        getmViewPager().setCurrentItem(position, smoothScroll);
     }
 
 
@@ -618,8 +660,8 @@ public class EasyNavigitionBar extends LinearLayout {
     }
 
 
-    public interface OnItemClickListener {
-        boolean onItemClickEvent(View view, int position);
+    public interface OnTabClickListener {
+        boolean onTabClickEvent(View view, int position);
     }
 
 
@@ -629,17 +671,34 @@ public class EasyNavigitionBar extends LinearLayout {
 
 
     public EasyNavigitionBar addLayoutHeight(int addLayoutHeight) {
-        this.addLayoutHeight = addLayoutHeight;
+        this.addLayoutHeight = NavigitionUtil.dip2px(getContext(), addLayoutHeight);
         return this;
     }
+
+    public EasyNavigitionBar scaleType(ImageView.ScaleType scaleType) {
+        this.scaleType = scaleType;
+        return this;
+    }
+
 
     public EasyNavigitionBar addIcon(int addIcon) {
         this.addIcon = addIcon;
         return this;
     }
 
+
+    public EasyNavigitionBar mode(int mode) {
+        this.mode = mode;
+        return this;
+    }
+
+    public EasyNavigitionBar hasPadding(boolean hasPadding) {
+        this.hasPadding = hasPadding;
+        return this;
+    }
+
     public EasyNavigitionBar addIconSize(int addIconSize) {
-        this.addIconSize = addIconSize;
+        this.addIconSize = NavigitionUtil.dip2px(getContext(), addIconSize);
         return this;
     }
 
@@ -655,7 +714,7 @@ public class EasyNavigitionBar extends LinearLayout {
     }
 
     public EasyNavigitionBar navigitionHeight(int navigitionHeight) {
-        this.navigitionHeight = navigitionHeight;
+        this.navigitionHeight = NavigitionUtil.dip2px(getContext(), navigitionHeight);
         return this;
     }
 
@@ -680,48 +739,48 @@ public class EasyNavigitionBar extends LinearLayout {
     }
 
     public EasyNavigitionBar tabTextSize(int tabTextSize) {
-        this.tabTextSize = tabTextSize;
+        this.tabTextSize = NavigitionUtil.sp2px(getContext(), tabTextSize);
         return this;
     }
 
     public EasyNavigitionBar tabTextTop(int tabTextTop) {
-        this.tabTextTop = tabTextTop;
+        this.tabTextTop = NavigitionUtil.dip2px(getContext(), tabTextTop);
         return this;
     }
 
     public EasyNavigitionBar msgPointTextSize(int msgPointTextSize) {
-        this.msgPointTextSize = msgPointTextSize;
+        this.msgPointTextSize = NavigitionUtil.sp2px(getContext(), msgPointTextSize);
         return this;
     }
 
     public EasyNavigitionBar msgPointSize(int msgPointSize) {
-        this.msgPointSize = msgPointSize;
+        this.msgPointSize = NavigitionUtil.dip2px(getContext(), msgPointSize);
         return this;
     }
 
     public EasyNavigitionBar msgPointLeft(int msgPointLeft) {
-        this.msgPointLeft = msgPointLeft;
+        this.msgPointLeft = NavigitionUtil.dip2px(getContext(), msgPointLeft);
         return this;
     }
 
     public EasyNavigitionBar msgPointTop(int msgPointTop) {
-        this.msgPointTop = msgPointTop;
+        this.msgPointTop = NavigitionUtil.dip2px(getContext(), msgPointTop);
         return this;
     }
 
 
     public EasyNavigitionBar hintPointSize(int hintPointSize) {
-        this.hintPointSize = hintPointSize;
+        this.hintPointSize = NavigitionUtil.dip2px(getContext(), hintPointSize);
         return this;
     }
 
     public EasyNavigitionBar hintPointLeft(int hintPointLeft) {
-        this.hintPointLeft = hintPointLeft;
+        this.hintPointLeft = NavigitionUtil.dip2px(getContext(), hintPointLeft);
         return this;
     }
 
     public EasyNavigitionBar hintPointTop(int hintPointTop) {
-        this.hintPointTop = hintPointTop;
+        this.hintPointTop = NavigitionUtil.dip2px(getContext(), hintPointTop);
         return this;
     }
 
@@ -751,8 +810,18 @@ public class EasyNavigitionBar extends LinearLayout {
         return this;
     }
 
-    public EasyNavigitionBar Anim(Anim anim) {
+    public EasyNavigitionBar anim(Anim anim) {
         this.anim = anim.getYoyo();
+        return this;
+    }
+
+    public EasyNavigitionBar addIconRule(int addIconRule) {
+        this.addIconRule = addIconRule;
+        return this;
+    }
+
+    public EasyNavigitionBar canScroll(boolean canScroll) {
+        this.canScroll = canScroll;
         return this;
     }
 
@@ -761,19 +830,20 @@ public class EasyNavigitionBar extends LinearLayout {
         return this;
     }
 
-    public EasyNavigitionBar isAdd(boolean isAdd) {
-        this.isAdd = isAdd;
-        return this;
-    }
 
-    public EasyNavigitionBar onItemListener(EasyNavigitionBar.OnItemClickListener onItemClickListener) {
-        this.onItemClickListener = onItemClickListener;
+    public EasyNavigitionBar onTabClickListener(EasyNavigitionBar.OnTabClickListener onTabClickListener) {
+        this.onTabClickListener = onTabClickListener;
         return this;
     }
 
 
     public EasyNavigitionBar iconSize(int iconSize) {
-        this.iconSize = iconSize;
+        this.iconSize = NavigitionUtil.dip2px(getContext(), iconSize);
+        return this;
+    }
+
+    public EasyNavigitionBar addIconBottom(int addIconBottom) {
+        this.addIconBottom = NavigitionUtil.dip2px(getContext(), addIconBottom);
         return this;
     }
 
@@ -806,12 +876,8 @@ public class EasyNavigitionBar extends LinearLayout {
         return smoothScroll;
     }
 
-    public boolean isAdd() {
-        return isAdd;
-    }
-
-    public EasyNavigitionBar.OnItemClickListener getOnItemClickListener() {
-        return onItemClickListener;
+    public EasyNavigitionBar.OnTabClickListener getOnTabClickListener() {
+        return onTabClickListener;
     }
 
     public int getIconSize() {
@@ -896,4 +962,52 @@ public class EasyNavigitionBar extends LinearLayout {
         return navigitionHeight;
     }
 
+    public boolean isCanScroll() {
+        return canScroll;
+    }
+
+    public ViewPagerAdapter getAdapter() {
+        return adapter;
+    }
+
+
+    public ImageView.ScaleType getScaleType() {
+        return scaleType;
+    }
+
+    public int getMode() {
+        return mode;
+    }
+
+    public LinearLayout getNavigitionLayout() {
+        return navigitionLayout;
+    }
+
+    public RelativeLayout getContentView() {
+        return contentView;
+    }
+
+    public View getLineView() {
+        return lineView;
+    }
+
+    public ViewGroup getAddLayout() {
+        return addViewLayout;
+    }
+
+    public float getAddIconBottom() {
+        return addIconBottom;
+    }
+
+    public int getAddIconRule() {
+        return addIconRule;
+    }
+
+    public RelativeLayout getAddContainerLayout() {
+        return AddContainerLayout;
+    }
+
+    public boolean isHasPadding() {
+        return hasPadding;
+    }
 }

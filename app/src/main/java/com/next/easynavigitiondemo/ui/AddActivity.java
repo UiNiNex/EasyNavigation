@@ -16,10 +16,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.next.easynavigition.constant.Anim;
-import com.next.easynavigition.utils.SmallUtil;
+import com.next.easynavigition.utils.NavigitionUtil;
 import com.next.easynavigition.view.EasyNavigitionBar;
-import com.next.easynavigition.view.NavigitionBuilder;
 import com.next.easynavigitiondemo.R;
+import com.next.easynavigitiondemo.ui.add.FirstFragment;
+import com.next.easynavigitiondemo.ui.add.SecondFragment;
+import com.next.easynavigitiondemo.ui.add.ThirdFragment;
 import com.next.easynavigitiondemo.view.KickBackAnimator;
 
 import java.util.ArrayList;
@@ -55,7 +57,7 @@ public class AddActivity extends AppCompatActivity {
 
         fragments.add(new FirstFragment());
         fragments.add(new SecondFragment());
-        fragments.add(new FirstFragment());
+        fragments.add(new ThirdFragment());
         fragments.add(new SecondFragment());
 
         navigitionBar.titleItems(tabText)
@@ -63,9 +65,10 @@ public class AddActivity extends AppCompatActivity {
                 .selectIconItems(selectIcon)
                 .fragmentList(fragments)
                 .fragmentManager(getSupportFragmentManager())
-                .onItemListener(new EasyNavigitionBar.OnItemClickListener() {
+
+                .onTabClickListener(new EasyNavigitionBar.OnTabClickListener() {
                     @Override
-                    public boolean onItemClickEvent(View view, int position) {
+                    public boolean onTabClickEvent(View view, int position) {
                         if (position == 3) {
                             Toast.makeText(AddActivity.this, "请先登录", Toast.LENGTH_SHORT).show();
                             return true;
@@ -74,20 +77,19 @@ public class AddActivity extends AppCompatActivity {
                         // Toast.makeText(AddActivity.this, "您点击了第" + (position + 1) + "个Tab", Toast.LENGTH_SHORT).show();
                     }
                 })
-                .isAdd(true)
-                .Anim(Anim.ZoomIn)
-                .addIcon(R.drawable.add_image)
+                .mode(EasyNavigitionBar.MODE_ADD)
+                .anim(Anim.ZoomIn)
+                .addIcon(R.mipmap.add_image)
                 .onAddClickListener(new EasyNavigitionBar.OnAddClickListener() {
                     @Override
-                    public void OnAddClickEvent(View view) {
+                    public boolean OnAddClickEvent(View view) {
                         //跳转页面（全民K歌）   或者   弹出菜单（微博）
                         showMunu();
+                        return false;
                     }
                 }).build();
 
         navigitionBar.setAddViewLayout(createWeiboView());
-
-        navigitionBar.getmViewPager().setCanScroll(true);
 
     }
 
@@ -157,8 +159,8 @@ public class AddActivity extends AppCompatActivity {
                 try {
                     //圆形扩展的动画
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                        int x = SmallUtil.getScreenWidth(AddActivity.this) / 2;
-                        int y = (int) (SmallUtil.getScreenHeith(AddActivity.this) - SmallUtil.dip2px(AddActivity.this, 25));
+                        int x = NavigitionUtil.getScreenWidth(AddActivity.this) / 2;
+                        int y = (int) (NavigitionUtil.getScreenHeith(AddActivity.this) - NavigitionUtil.dip2px(AddActivity.this, 25));
                         Animator animator = ViewAnimationUtils.createCircularReveal(navigitionBar.getAddViewLayout(), x,
                                 y, 0, navigitionBar.getAddViewLayout().getHeight());
                         animator.addListener(new AnimatorListenerAdapter() {
@@ -197,8 +199,8 @@ public class AddActivity extends AppCompatActivity {
         try {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
 
-                int x = SmallUtil.getScreenWidth(this) / 2;
-                int y = (SmallUtil.getScreenHeith(this) - SmallUtil.dip2px(this, 25));
+                int x = NavigitionUtil.getScreenWidth(this) / 2;
+                int y = (NavigitionUtil.getScreenHeith(this) - NavigitionUtil.dip2px(this, 25));
                 Animator animator = ViewAnimationUtils.createCircularReveal(navigitionBar.getAddViewLayout(), x,
                         y, navigitionBar.getAddViewLayout().getHeight(), 0);
                 animator.addListener(new AnimatorListenerAdapter() {
@@ -219,6 +221,7 @@ public class AddActivity extends AppCompatActivity {
         } catch (Exception e) {
         }
     }
+
 
     public EasyNavigitionBar getNavigitionBar() {
         return navigitionBar;

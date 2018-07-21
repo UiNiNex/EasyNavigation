@@ -18,7 +18,13 @@
         android:onClick="clear"
         android:text="清除消息红点提示"
         app:layout_constraintTop_toBottomOf="@id/bt01" />
-
+    <Button
+        android:id="@+id/bt03"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:onClick="onJump"
+        android:text="跳转第二个页面，并傻笑"
+        app:layout_constraintTop_toBottomOf="@id/bt02" />
 
     <TextView
         android:layout_width="match_parent"

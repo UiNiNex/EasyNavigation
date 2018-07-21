@@ -9,9 +9,12 @@
         android:id="@+id/navigitionBar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:addImageSize="50dp"
-        app:navigitionHeight="48dp"
-        app:addLayoutHeight="80dp">
+        app:Easy_addIconSize="40dp"
+        app:Easy_navigitionHeight="60dp"
+        app:Easy_addIconBottom="10dp"
+        app:Easy_addIconRule="RULE_CENTER"
+        app:Easy_hasPadding="false"
+        app:Easy_navigitionBackground="#90ffffff">
 
     </com.next.easynavigition.view.EasyNavigitionBar>
 

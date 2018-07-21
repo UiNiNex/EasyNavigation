@@ -1,4 +1,4 @@
-package com.next.easynavigitiondemo.ui;
+package com.next.easynavigitiondemo.ui.add;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.next.easynavigitiondemo.R;
+import com.next.easynavigitiondemo.ui.AddActivity;
+import com.next.easynavigitiondemo.ui.NoAddActivity;
 
 /**
  * Created by Administrator on 2018/6/2.
@@ -49,6 +51,17 @@ public class FirstFragment extends android.support.v4.app.Fragment {
                     ((NoAddActivity) getActivity()).getNavigitionBar().clearAllHintPoint();
                 }
 
+            }
+        });
+
+        Button bt03 = view.findViewById(R.id.bt03);
+        bt03.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (getActivity() instanceof AddActivity) {
+                    ((AddActivity) getActivity()).getNavigitionBar().selectTab(1);
+                    ((SecondFragment) (((AddActivity) getActivity()).getNavigitionBar().getAdapter().getItem(1))).showToast("嘻嘻哈哈嗝");
+                }
             }
         });
 

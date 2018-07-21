@@ -8,7 +8,7 @@ import android.view.WindowManager;
  * Created by Jue on 2016/3/29.
  * 常用小工具类
  */
-public class SmallUtil {
+public class NavigitionUtil {
 
     /**
      * 获取屏幕宽度

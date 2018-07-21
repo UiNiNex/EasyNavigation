@@ -6,8 +6,9 @@ import android.view.View;
 
 import com.next.easynavigition.constant.Anim;
 import com.next.easynavigition.view.EasyNavigitionBar;
-import com.next.easynavigition.view.NavigitionBuilder;
 import com.next.easynavigitiondemo.R;
+import com.next.easynavigitiondemo.ui.add.FirstFragment;
+import com.next.easynavigitiondemo.ui.add.SecondFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,13 +43,13 @@ public class NoAddActivity extends AppCompatActivity {
                 .selectIconItems(selectIcon)
                 .fragmentList(fragments)
                 .fragmentManager(getSupportFragmentManager())
-                .onItemListener(new EasyNavigitionBar.OnItemClickListener() {
+                .onTabClickListener(new EasyNavigitionBar.OnTabClickListener() {
                     @Override
-                    public boolean onItemClickEvent(View view, int position) {
+                    public boolean onTabClickEvent(View view, int position) {
                         return false;
                     }
                 })
-                .Anim(Anim.ZoomIn)
+                .anim(Anim.ZoomIn)
                 .build();
 
     }

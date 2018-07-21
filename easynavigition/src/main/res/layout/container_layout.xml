@@ -1,52 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#ffffff">
+    android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/container"
+
+    <com.next.easynavigition.view.CustomViewPager
+        android:id="@+id/mViewPager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent"></com.next.easynavigition.view.CustomViewPager>
 
 
-        <com.next.easynavigition.view.CustomViewPager
-            android:id="@+id/mViewPager"
+    <RelativeLayout
+        android:id="@+id/add_rl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:clickable="false">
+
+        <LinearLayout
+            android:id="@+id/navigition_ll"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"></com.next.easynavigition.view.CustomViewPager>
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal"></LinearLayout>
 
-
-        <RelativeLayout
-            android:id="@+id/container_rl"
+        <View
+            android:id="@+id/common_horizontal_line"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent">
+            android:layout_height="1px"
+            android:layout_above="@+id/navigition_ll"
+            android:background="#f7f7f7" />
 
-            <LinearLayout
-                android:id="@+id/navigition_ll"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:orientation="horizontal"></LinearLayout>
-
-            <View
-                android:id="@+id/common_horizontal_line"
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:layout_above="@+id/navigition_ll"
-                android:background="#cccccc" />
-
-        </RelativeLayout>
-    </LinearLayout>
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/add_view_ll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        android:orientation="vertical">
-    </LinearLayout>
+        android:orientation="vertical"
+        android:visibility="gone"></LinearLayout>
 
 </RelativeLayout>
