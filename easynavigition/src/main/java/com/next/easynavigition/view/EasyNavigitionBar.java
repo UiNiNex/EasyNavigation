@@ -84,20 +84,20 @@ public class EasyNavigitionBar extends LinearLayout {
 
     //提示红点大小
     private float hintPointSize = 6;
-    //提示红点距Tab图标的距离
-    private float hintPointLeft = 0;
-    //提示红点距顶部的距离
-    private float hintPointTop = 5;
+    //提示红点距Tab图标右侧的距离
+    private float hintPointLeft = -3;
+    //提示红点距图标顶部的距离
+    private float hintPointTop = -3;
 
     private EasyNavigitionBar.OnTabClickListener onTabClickListener;
     //消息红点字体大小
     private float msgPointTextSize = 9;
     //消息红点大小
     private float msgPointSize = 18;
-    //消息红点距Tab图标的距离
-    private float msgPointLeft = -5;
-    //消息红点距顶部的距离
-    private float msgPointTop = 3;
+    //消息红点距Tab图标右侧的距离   默认为Tab图标的一半
+    private float msgPointLeft = -10;
+    //消息红点距图标顶部的距离  默认为Tab图标的一半
+    private float msgPointTop = -10;
     //Tab文字距Tab图标的距离
     private float tabTextTop = 2;
     //Tab文字大小
@@ -189,10 +189,10 @@ public class EasyNavigitionBar extends LinearLayout {
             hintPointSize = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_hintPointSize, hintPointSize);
             msgPointSize = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_msgPointSize, msgPointSize);
             hintPointLeft = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_hintPointLeft, hintPointLeft);
-            msgPointTop = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_msgPointTop, msgPointTop);
+            msgPointTop = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_msgPointTop, -iconSize / 2);
             hintPointTop = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_hintPointTop, hintPointTop);
 
-            msgPointLeft = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_msgPointLeft, msgPointLeft);
+            msgPointLeft = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_msgPointLeft, -iconSize / 2);
             msgPointTextSize = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_msgPointTextSize, msgPointTextSize);
             addIconSize = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_addIconSize, addIconSize);
             addIcon = attributes.getInteger(R.styleable.EasyNavigitionBar_Easy_addIconRes, addIcon);
@@ -359,7 +359,7 @@ public class EasyNavigitionBar extends LinearLayout {
 
             //提示红点
             RelativeLayout.LayoutParams hintPointParams = (RelativeLayout.LayoutParams) hintPoint.getLayoutParams();
-            hintPointParams.topMargin = (int) hintPointTop;
+            hintPointParams.bottomMargin = (int) hintPointTop;
             hintPointParams.width = (int) hintPointSize;
             hintPointParams.height = (int) hintPointSize;
             hintPointParams.leftMargin = (int) hintPointLeft;
@@ -369,7 +369,7 @@ public class EasyNavigitionBar extends LinearLayout {
             TextView msgPoint = itemView.findViewById(R.id.msg_point_tv);
             msgPoint.setTextSize(NavigitionUtil.px2sp(getContext(), msgPointTextSize));
             RelativeLayout.LayoutParams msgPointParams = (RelativeLayout.LayoutParams) msgPoint.getLayoutParams();
-            msgPointParams.topMargin = (int) msgPointTop;
+            msgPointParams.bottomMargin = (int) msgPointTop;
             msgPointParams.width = (int) msgPointSize;
             msgPointParams.height = (int) msgPointSize;
             msgPointParams.leftMargin = (int) msgPointLeft;
@@ -501,7 +501,7 @@ public class EasyNavigitionBar extends LinearLayout {
 
                 //提示红点
                 RelativeLayout.LayoutParams hintPointParams = (RelativeLayout.LayoutParams) hintPoint.getLayoutParams();
-                hintPointParams.topMargin = (int) hintPointTop;
+                hintPointParams.bottomMargin = (int) hintPointTop;
                 hintPointParams.width = (int) hintPointSize;
                 hintPointParams.height = (int) hintPointSize;
                 hintPointParams.leftMargin = (int) hintPointLeft;
@@ -511,7 +511,7 @@ public class EasyNavigitionBar extends LinearLayout {
                 TextView msgPoint = itemView.findViewById(R.id.msg_point_tv);
                 msgPoint.setTextSize(NavigitionUtil.px2sp(getContext(), msgPointTextSize));
                 RelativeLayout.LayoutParams msgPointParams = (RelativeLayout.LayoutParams) msgPoint.getLayoutParams();
-                msgPointParams.topMargin = (int) msgPointTop;
+                msgPointParams.bottomMargin = (int) msgPointTop;
                 msgPointParams.width = (int) msgPointSize;
                 msgPointParams.height = (int) msgPointSize;
                 msgPointParams.leftMargin = (int) msgPointLeft;

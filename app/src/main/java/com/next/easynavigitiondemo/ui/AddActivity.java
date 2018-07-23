@@ -65,16 +65,15 @@ public class AddActivity extends AppCompatActivity {
                 .selectIconItems(selectIcon)
                 .fragmentList(fragments)
                 .fragmentManager(getSupportFragmentManager())
-
                 .onTabClickListener(new EasyNavigitionBar.OnTabClickListener() {
                     @Override
                     public boolean onTabClickEvent(View view, int position) {
                         if (position == 3) {
                             Toast.makeText(AddActivity.this, "请先登录", Toast.LENGTH_SHORT).show();
+                            //return true则拦截事件、不进行页面切换
                             return true;
                         }
                         return false;
-                        // Toast.makeText(AddActivity.this, "您点击了第" + (position + 1) + "个Tab", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .mode(EasyNavigitionBar.MODE_ADD)
@@ -108,6 +107,13 @@ public class AddActivity extends AppCompatActivity {
             View itemView = View.inflate(AddActivity.this, R.layout.item_icon, null);
             ImageView menuImage = itemView.findViewById(R.id.menu_icon_iv);
             TextView menuText = itemView.findViewById(R.id.menu_text_tv);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(AddActivity.this, "自己去实现好么", Toast.LENGTH_SHORT).show();
+                }
+            });
 
             menuImage.setImageResource(menuIconItems[i]);
             menuText.setText(menuTextItems[i]);

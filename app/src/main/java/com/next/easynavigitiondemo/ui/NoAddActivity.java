@@ -37,19 +37,11 @@ public class NoAddActivity extends AppCompatActivity {
         fragments.add(new FirstFragment());
         fragments.add(new SecondFragment());
 
-        navigitionBar
-                .titleItems(tabText)
+        navigitionBar.titleItems(tabText)
                 .normalIconItems(normalIcon)
                 .selectIconItems(selectIcon)
                 .fragmentList(fragments)
                 .fragmentManager(getSupportFragmentManager())
-                .onTabClickListener(new EasyNavigitionBar.OnTabClickListener() {
-                    @Override
-                    public boolean onTabClickEvent(View view, int position) {
-                        return false;
-                    }
-                })
-                .anim(Anim.ZoomIn)
                 .build();
 
     }

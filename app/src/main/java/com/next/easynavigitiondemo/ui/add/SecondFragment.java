@@ -22,7 +22,8 @@ public class SecondFragment extends android.support.v4.app.Fragment {
         return view;
     }
 
+    //提示消息
     public void showToast(String str) {
-        Toast.makeText(getActivity(), str, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), str, Toast.LENGTH_SHORT).show();
     }
 }

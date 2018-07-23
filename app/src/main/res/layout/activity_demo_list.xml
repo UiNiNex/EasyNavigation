@@ -7,16 +7,16 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:text="不带加号"
         android:gravity="center"
-        android:textSize="17sp"
-        android:onClick="NoAddNavigitionBar"/>
+        android:onClick="NoAddNavigitionBar"
+        android:text="不带加号"
+        android:textSize="17sp" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:text="带加号"
         android:gravity="center"
-        android:textSize="17sp"
-        android:onClick="AddNavigitionBar"/>
+        android:onClick="AddNavigitionBar"
+        android:text="带加号"
+        android:textSize="17sp" />
 </LinearLayout>
