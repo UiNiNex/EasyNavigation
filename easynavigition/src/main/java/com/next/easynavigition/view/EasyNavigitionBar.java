@@ -112,7 +112,7 @@ public class EasyNavigitionBar extends LinearLayout {
     private int lineColor = Color.parseColor("#f7f7f7");
 
     private int navigitionBackground = Color.parseColor("#ffffff");
-    private float navigitionHeight = 52;
+    private float navigitionHeight = 60;
 
     private ImageView.ScaleType scaleType = ImageView.ScaleType.CENTER_INSIDE;
 
@@ -127,6 +127,7 @@ public class EasyNavigitionBar extends LinearLayout {
     private float addLayoutHeight = navigitionHeight;
     public static final int MODE_NORMAL = 0;
     public static final int MODE_ADD = 1;
+    public static final int MODE_ADD2 = 2;
 
     private float addIconBottom = 10;
 
@@ -292,10 +293,12 @@ public class EasyNavigitionBar extends LinearLayout {
         lineView.setBackgroundColor(lineColor);
         lineView.setLayoutParams(lineParams);
 
-        if (mode == 0) {
+        if (mode == MODE_NORMAL) {
             buildNavigition();
-        } else if (mode == 1) {
+        } else if (mode == MODE_ADD) {
             buildAddNavigition();
+        } else if (mode == MODE_ADD2) {
+            buildAdd2Navigition();
         }
         if (canScroll) {
             getmViewPager().setCanScroll(true);
@@ -557,6 +560,163 @@ public class EasyNavigitionBar extends LinearLayout {
             public void onClick(View view) {
                 if (onAddClickListener != null)
                     onAddClickListener.OnAddClickEvent(view);
+            }
+        });
+
+        addLayout.addView(addImage, imageParams);
+        AddContainerLayout.addView(addLayout, addParams);
+    }
+
+
+    //构建中间带按钮的navigition2
+    public void buildAdd2Navigition() {
+        if ((titleItems.length != normalIconItems.length) || (titleItems.length != selectIconItems.length) || (normalIconItems.length != selectIconItems.length))
+            return;
+        tabCount = titleItems.length + 1;
+        int index = 0;
+
+
+        hintPointList.clear();
+        hintPointList.clear();
+        imageViewList.clear();
+        textViewList.clear();
+        tabList.clear();
+
+        navigitionLayout.removeAllViews();
+
+        adapter = new ViewPagerAdapter(fragmentManager, fragmentList);
+        mViewPager.setOffscreenPageLimit(3);
+        mViewPager.setAdapter(adapter);
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                select(position, true);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+        for (int i = 0; i < tabCount; i++) {
+
+            if (i == tabCount / 2) {
+                RelativeLayout addLayout = new RelativeLayout(getContext());
+                RelativeLayout.LayoutParams addParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                addParams.width = NavigitionUtil.getScreenWidth(getContext()) / tabCount;
+                addLayout.setLayoutParams(addParams);
+                navigitionLayout.addView(addLayout);
+            } else {
+
+                if (i > 1) {
+                    index = i - 1;
+                } else {
+                    index = i;
+                }
+
+                View itemView = View.inflate(getContext(), R.layout.navigition_tab_layout, null);
+                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                params.width = NavigitionUtil.getScreenWidth(getContext()) / tabCount;
+
+                itemView.setLayoutParams(params);
+                itemView.setId(index);
+
+                TextView text = itemView.findViewById(R.id.tab_text_tv);
+                ImageView icon = itemView.findViewById(R.id.tab_icon_iv);
+                icon.setScaleType(scaleType);
+                LayoutParams iconParams = (LayoutParams) icon.getLayoutParams();
+                iconParams.width = (int) iconSize;
+                iconParams.height = (int) iconSize;
+                icon.setLayoutParams(iconParams);
+
+                imageViewList.add(icon);
+                textViewList.add(text);
+
+                itemView.setOnClickListener(new OnClickListener() {
+                    public void onClick(View view) {
+                        if (onTabClickListener != null) {
+                            if (!onTabClickListener.onTabClickEvent(view, view.getId())) {
+                                mViewPager.setCurrentItem(view.getId(), smoothScroll);
+                            }
+                        } else {
+                            mViewPager.setCurrentItem(view.getId(), smoothScroll);
+                        }
+                    }
+                });
+
+                LayoutParams textParams = (LayoutParams) text.getLayoutParams();
+                textParams.topMargin = (int) tabTextTop;
+                text.setLayoutParams(textParams);
+                text.setText(titleItems[index]);
+                text.setTextSize(NavigitionUtil.px2sp(getContext(), tabTextSize));
+
+
+                View hintPoint = itemView.findViewById(R.id.red_point);
+
+                //提示红点
+                RelativeLayout.LayoutParams hintPointParams = (RelativeLayout.LayoutParams) hintPoint.getLayoutParams();
+                hintPointParams.bottomMargin = (int) hintPointTop;
+                hintPointParams.width = (int) hintPointSize;
+                hintPointParams.height = (int) hintPointSize;
+                hintPointParams.leftMargin = (int) hintPointLeft;
+                hintPoint.setLayoutParams(hintPointParams);
+
+                //消息红点
+                TextView msgPoint = itemView.findViewById(R.id.msg_point_tv);
+                msgPoint.setTextSize(NavigitionUtil.px2sp(getContext(), msgPointTextSize));
+                RelativeLayout.LayoutParams msgPointParams = (RelativeLayout.LayoutParams) msgPoint.getLayoutParams();
+                msgPointParams.bottomMargin = (int) msgPointTop;
+                msgPointParams.width = (int) msgPointSize;
+                msgPointParams.height = (int) msgPointSize;
+                msgPointParams.leftMargin = (int) msgPointLeft;
+                msgPoint.setLayoutParams(msgPointParams);
+
+
+                hintPointList.add(hintPoint);
+                msgPointList.add(msgPoint);
+
+
+                tabList.add(itemView);
+                navigitionLayout.addView(itemView);
+            }
+        }
+
+
+        RelativeLayout addLayout = new RelativeLayout(getContext());
+        RelativeLayout.LayoutParams addParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        addParams.width = NavigitionUtil.getScreenWidth(getContext()) / tabCount;
+        if (addIconRule == RULE_CENTER) {
+            addParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+        } else if (addIconRule == RULE_BOTTOM) {
+            addParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+            addParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        }
+
+        ImageView addImage = new ImageView(getContext());
+        RelativeLayout.LayoutParams imageParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        imageParams.width = (int) addIconSize;
+        imageParams.height = (int) addIconSize;
+
+        if (addIconRule == RULE_CENTER) {
+            imageParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+        } else if (addIconRule == RULE_BOTTOM) {
+            imageParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+            imageParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            imageParams.bottomMargin = (int) addIconBottom;
+        }
+
+        addImage.setImageResource(addIcon);
+        addImage.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (onTabClickListener != null)
+                    onTabClickListener.onTabClickEvent(view,tabCount / 2);
             }
         });
 

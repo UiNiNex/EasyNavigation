@@ -9,13 +9,13 @@ import android.widget.Button;
 
 import com.next.easynavigitiondemo.R;
 import com.next.easynavigitiondemo.ui.AddActivity;
-import com.next.easynavigitiondemo.ui.NoAddActivity;
+import com.next.easynavigitiondemo.ui.NormalActivity;
 
 /**
  * Created by Administrator on 2018/6/2.
  */
 
-public class FirstFragment extends android.support.v4.app.Fragment {
+public class AddFirstFragment extends android.support.v4.app.Fragment {
 
     @Nullable
     @Override
@@ -30,10 +30,10 @@ public class FirstFragment extends android.support.v4.app.Fragment {
                     ((AddActivity) getActivity()).getNavigitionBar().setMsgPointCount(2, 109);
                     ((AddActivity) getActivity()).getNavigitionBar().setMsgPointCount(0, 5);
                     ((AddActivity) getActivity()).getNavigitionBar().setHintPoint(3, true);
-                } else if (getActivity() instanceof NoAddActivity) {
-                    ((NoAddActivity) getActivity()).getNavigitionBar().setMsgPointCount(2, 109);
-                    ((NoAddActivity) getActivity()).getNavigitionBar().setMsgPointCount(0, 5);
-                    ((NoAddActivity) getActivity()).getNavigitionBar().setHintPoint(3, true);
+                } else if (getActivity() instanceof NormalActivity) {
+                    ((NormalActivity) getActivity()).getNavigitionBar().setMsgPointCount(2, 109);
+                    ((NormalActivity) getActivity()).getNavigitionBar().setMsgPointCount(0, 5);
+                    ((NormalActivity) getActivity()).getNavigitionBar().setHintPoint(3, true);
                 }
             }
         });
@@ -46,9 +46,9 @@ public class FirstFragment extends android.support.v4.app.Fragment {
                 if (getActivity() instanceof AddActivity) {
                     ((AddActivity) getActivity()).getNavigitionBar().clearAllMsgPoint();
                     ((AddActivity) getActivity()).getNavigitionBar().clearAllHintPoint();
-                } else if (getActivity() instanceof NoAddActivity) {
-                    ((NoAddActivity) getActivity()).getNavigitionBar().clearAllMsgPoint();
-                    ((NoAddActivity) getActivity()).getNavigitionBar().clearAllHintPoint();
+                } else if (getActivity() instanceof NormalActivity) {
+                    ((NormalActivity) getActivity()).getNavigitionBar().clearAllMsgPoint();
+                    ((NormalActivity) getActivity()).getNavigitionBar().clearAllHintPoint();
                 }
 
             }
@@ -60,7 +60,7 @@ public class FirstFragment extends android.support.v4.app.Fragment {
             public void onClick(View view) {
                 if (getActivity() instanceof AddActivity) {
                     ((AddActivity) getActivity()).getNavigitionBar().selectTab(1);
-                    ((SecondFragment) (((AddActivity) getActivity()).getNavigitionBar().getAdapter().getItem(1))).showToast("嘻嘻哈哈嗝");
+                    ((AddSecondFragment) (((AddActivity) getActivity()).getNavigitionBar().getAdapter().getItem(1))).showToast("嘻嘻哈哈嗝");
                 }
             }
         });

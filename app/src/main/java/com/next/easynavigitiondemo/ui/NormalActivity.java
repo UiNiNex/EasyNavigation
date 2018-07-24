@@ -2,18 +2,18 @@ package com.next.easynavigitiondemo.ui;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 
-import com.next.easynavigition.constant.Anim;
 import com.next.easynavigition.view.EasyNavigitionBar;
 import com.next.easynavigitiondemo.R;
-import com.next.easynavigitiondemo.ui.add.FirstFragment;
-import com.next.easynavigitiondemo.ui.add.SecondFragment;
+import com.next.easynavigitiondemo.ui.add.AddFirstFragment;
+import com.next.easynavigitiondemo.ui.add.AddSecondFragment;
+import com.next.easynavigitiondemo.ui.normal.NormalFirstFragment;
+import com.next.easynavigitiondemo.ui.normal.NormalSecondFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class NoAddActivity extends AppCompatActivity {
+public class NormalActivity extends AppCompatActivity {
 
     private EasyNavigitionBar navigitionBar;
 
@@ -32,16 +32,17 @@ public class NoAddActivity extends AppCompatActivity {
 
         navigitionBar = findViewById(R.id.navigitionBar);
 
-        fragments.add(new FirstFragment());
-        fragments.add(new SecondFragment());
-        fragments.add(new FirstFragment());
-        fragments.add(new SecondFragment());
+        fragments.add(new NormalFirstFragment());
+        fragments.add(new NormalSecondFragment());
+        fragments.add(new NormalFirstFragment());
+        fragments.add(new NormalSecondFragment());
 
         navigitionBar.titleItems(tabText)
                 .normalIconItems(normalIcon)
                 .selectIconItems(selectIcon)
                 .fragmentList(fragments)
                 .fragmentManager(getSupportFragmentManager())
+                .canScroll(true)
                 .build();
 
     }

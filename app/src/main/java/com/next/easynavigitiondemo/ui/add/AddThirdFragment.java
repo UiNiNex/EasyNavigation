@@ -12,7 +12,7 @@ import com.next.easynavigitiondemo.R;
  * Created by Jue on 2018/6/2.
  */
 
-public class ThirdFragment extends android.support.v4.app.Fragment {
+public class AddThirdFragment extends android.support.v4.app.Fragment {
 
     @Nullable
     @Override

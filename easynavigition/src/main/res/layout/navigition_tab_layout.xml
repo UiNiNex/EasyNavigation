@@ -36,19 +36,17 @@
             android:layout_height="6dp"
             android:layout_above="@+id/ll"
             android:layout_marginBottom="-3dp"
-            android:background="@drawable/oval_red"
             android:visibility="gone"
+            android:background="@drawable/oval_red"
             android:layout_toRightOf="@+id/ll" />
 
         <TextView
             android:id="@+id/msg_point_tv"
             android:layout_width="18dp"
             android:layout_height="18dp"
-            android:layout_marginLeft="-8dp"
-            android:layout_marginBottom="-8dp"
-            android:visibility="gone"
             android:layout_above="@+id/ll"
             android:layout_toRightOf="@+id/ll"
+            android:visibility="gone"
             android:background="@drawable/oval_red"
             android:gravity="center"
             android:textColor="#FFFFFF"

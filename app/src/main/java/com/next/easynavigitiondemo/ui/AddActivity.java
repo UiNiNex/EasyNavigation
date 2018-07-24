@@ -19,9 +19,9 @@ import com.next.easynavigition.constant.Anim;
 import com.next.easynavigition.utils.NavigitionUtil;
 import com.next.easynavigition.view.EasyNavigitionBar;
 import com.next.easynavigitiondemo.R;
-import com.next.easynavigitiondemo.ui.add.FirstFragment;
-import com.next.easynavigitiondemo.ui.add.SecondFragment;
-import com.next.easynavigitiondemo.ui.add.ThirdFragment;
+import com.next.easynavigitiondemo.ui.add.AddFirstFragment;
+import com.next.easynavigitiondemo.ui.add.AddSecondFragment;
+import com.next.easynavigitiondemo.ui.add.AddThirdFragment;
 import com.next.easynavigitiondemo.view.KickBackAnimator;
 
 import java.util.ArrayList;
@@ -55,10 +55,10 @@ public class AddActivity extends AppCompatActivity {
 
         navigitionBar = findViewById(R.id.navigitionBar);
 
-        fragments.add(new FirstFragment());
-        fragments.add(new SecondFragment());
-        fragments.add(new ThirdFragment());
-        fragments.add(new SecondFragment());
+        fragments.add(new AddFirstFragment());
+        fragments.add(new AddSecondFragment());
+        fragments.add(new AddThirdFragment());
+        fragments.add(new AddSecondFragment());
 
         navigitionBar.titleItems(tabText)
                 .normalIconItems(normalIcon)
@@ -87,6 +87,7 @@ public class AddActivity extends AppCompatActivity {
                         return false;
                     }
                 }).build();
+
 
         navigitionBar.setAddViewLayout(createWeiboView());
 
