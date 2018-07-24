@@ -6,15 +6,18 @@
 简书地址:[https://www.jianshu.com/p/ce8e09cda486](https://www.jianshu.com/p/ce8e09cda486 "悬停显示")
 
 
-#前言
+# 前言
 因为公司好多项目会用到底部导航栏，大都千篇一律，无非2-5个Tab（可能会有些点击动画、红点提示或者中间多个加号）总是重复相同的操作...所以...很懒的我希望几行代码就能实现这个效果（少敲一行是一行）
 
 
-#效果图
+# 效果图
+
+![image](https://github.com/forvv231/EasyNavigition/blob/master/screenshot/pre.gif)
+
 ![轻松实现.gif](https://upload-images.jianshu.io/upload_images/5739496-c5a193a09c2142ec.gif?imageMogr2/auto-orient/strip)
 
 
-#实现
+# 实现
 - 依赖
 
 Step 1. Add it in your root build.gradle at the end of repositories:
@@ -84,7 +87,7 @@ navigitionBar.titleItems(tabText)
 - 增加中间图片资源（addIcon属性）
 
 ---
-#属性
+# 属性
 - 什么？不过瘾？看看下面给你提供可以更改的属性，满足你的需求（xml也可设置）
 ```
  navigitionBar.titleItems(tabText)      //必传  Tab文字集合
@@ -135,7 +138,7 @@ navigitionBar.titleItems(tabText)
 ```
 
 ---
-#需求（简单列举几个）
+# 需求（简单列举几个）
 ##### 需求1：红点或数字消息提示
 ```
 //数字消息大于99显示99+ 小于等于0不显示，取消显示则可以navigitionBar.setMsgPointCount(2, 0)
@@ -212,7 +215,7 @@ onTabClickEvent方法中return true则拦截事件、不进行页面切换
  ((SecondFragment) (((AddActivity) getActivity()).getNavigitionBar().getAdapter().getItem(1))).showToast("嘻嘻哈哈嗝");
 ```
 ---
-#Demo
+# Demo
 github：[https://github.com/forvv231/EasyNavigition](https://github.com/forvv231/EasyNavigition)
 
 apk：[ https://fir.im/7r4d]( https://fir.im/7r4d)
@@ -220,13 +223,13 @@ apk：[ https://fir.im/7r4d]( https://fir.im/7r4d)
 ![image.png](https://upload-images.jianshu.io/upload_images/5739496-92862d9212bbbdb1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 ---
-#By the way
+# By the way
 
 - **本Demo中仿微博弹出菜单实现**
 参考https://github.com/DuShuYuan/PlusMenu
 
 ---
-#点个赞吧
+# 点个赞吧
 刚刚电梯里就自己，然后进来了一对情侣
 
 男：只要长按按钮按错的楼层就会被取消
