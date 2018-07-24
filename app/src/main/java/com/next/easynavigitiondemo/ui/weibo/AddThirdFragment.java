@@ -1,4 +1,4 @@
-package com.next.easynavigitiondemo.ui.add;
+package com.next.easynavigitiondemo.ui.weibo;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

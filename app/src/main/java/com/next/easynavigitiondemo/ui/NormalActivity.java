@@ -5,8 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.next.easynavigition.view.EasyNavigitionBar;
 import com.next.easynavigitiondemo.R;
-import com.next.easynavigitiondemo.ui.add.AddFirstFragment;
-import com.next.easynavigitiondemo.ui.add.AddSecondFragment;
 import com.next.easynavigitiondemo.ui.normal.NormalFirstFragment;
 import com.next.easynavigitiondemo.ui.normal.NormalSecondFragment;
 

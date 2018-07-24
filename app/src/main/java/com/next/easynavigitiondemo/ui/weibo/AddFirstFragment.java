@@ -1,4 +1,4 @@
-package com.next.easynavigitiondemo.ui.add;
+package com.next.easynavigitiondemo.ui.weibo;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.next.easynavigitiondemo.R;
-import com.next.easynavigitiondemo.ui.AddActivity;
+import com.next.easynavigitiondemo.ui.WeiboActivity;
 import com.next.easynavigitiondemo.ui.NormalActivity;
 
 /**
@@ -26,10 +26,10 @@ public class AddFirstFragment extends android.support.v4.app.Fragment {
         bt01.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (getActivity() instanceof AddActivity) {
-                    ((AddActivity) getActivity()).getNavigitionBar().setMsgPointCount(2, 109);
-                    ((AddActivity) getActivity()).getNavigitionBar().setMsgPointCount(0, 5);
-                    ((AddActivity) getActivity()).getNavigitionBar().setHintPoint(3, true);
+                if (getActivity() instanceof WeiboActivity) {
+                    ((WeiboActivity) getActivity()).getNavigitionBar().setMsgPointCount(2, 109);
+                    ((WeiboActivity) getActivity()).getNavigitionBar().setMsgPointCount(0, 5);
+                    ((WeiboActivity) getActivity()).getNavigitionBar().setHintPoint(3, true);
                 } else if (getActivity() instanceof NormalActivity) {
                     ((NormalActivity) getActivity()).getNavigitionBar().setMsgPointCount(2, 109);
                     ((NormalActivity) getActivity()).getNavigitionBar().setMsgPointCount(0, 5);
@@ -43,9 +43,9 @@ public class AddFirstFragment extends android.support.v4.app.Fragment {
         bt02.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (getActivity() instanceof AddActivity) {
-                    ((AddActivity) getActivity()).getNavigitionBar().clearAllMsgPoint();
-                    ((AddActivity) getActivity()).getNavigitionBar().clearAllHintPoint();
+                if (getActivity() instanceof WeiboActivity) {
+                    ((WeiboActivity) getActivity()).getNavigitionBar().clearAllMsgPoint();
+                    ((WeiboActivity) getActivity()).getNavigitionBar().clearAllHintPoint();
                 } else if (getActivity() instanceof NormalActivity) {
                     ((NormalActivity) getActivity()).getNavigitionBar().clearAllMsgPoint();
                     ((NormalActivity) getActivity()).getNavigitionBar().clearAllHintPoint();
@@ -58,9 +58,9 @@ public class AddFirstFragment extends android.support.v4.app.Fragment {
         bt03.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (getActivity() instanceof AddActivity) {
-                    ((AddActivity) getActivity()).getNavigitionBar().selectTab(1);
-                    ((AddSecondFragment) (((AddActivity) getActivity()).getNavigitionBar().getAdapter().getItem(1))).showToast("嘻嘻哈哈嗝");
+                if (getActivity() instanceof WeiboActivity) {
+                    ((WeiboActivity) getActivity()).getNavigitionBar().selectTab(1);
+                    ((AddSecondFragment) (((WeiboActivity) getActivity()).getNavigitionBar().getAdapter().getItem(1))).showToast("嘻嘻哈哈嗝");
                 }
             }
         });

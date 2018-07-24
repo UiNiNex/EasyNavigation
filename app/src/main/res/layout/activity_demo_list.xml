@@ -9,7 +9,7 @@
         android:layout_height="60dp"
         android:gravity="center"
         android:onClick="NoAddNavigitionBar"
-        android:text="不带加号"
+        android:text="基础版(Normal)"
         android:textSize="17sp" />
 
     <Button
@@ -17,6 +17,14 @@
         android:layout_height="60dp"
         android:gravity="center"
         android:onClick="AddNavigitionBar"
-        android:text="带加号"
+        android:text="加号版本(Add)"
+        android:textSize="17sp" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:gravity="center"
+        android:onClick="OnWeibo"
+        android:text="示例(Weibo)"
         android:textSize="17sp" />
 </LinearLayout>

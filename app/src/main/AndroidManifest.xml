@@ -17,6 +17,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.NormalActivity" />
+        <activity android:name=".ui.WeiboActivity" />
         <activity android:name=".ui.AddActivity" />
     </application>
 
