@@ -14,7 +14,6 @@
 
 ![image](https://github.com/forvv231/EasyNavigition/blob/master/screenshot/pre.gif)
 
-![轻松实现.gif](https://upload-images.jianshu.io/upload_images/5739496-c5a193a09c2142ec.gif?imageMogr2/auto-orient/strip)
 
 
 # 实现
@@ -237,9 +236,3 @@ apk：[ https://fir.im/7r4d]( https://fir.im/7r4d)
 女：哇真的耶好厉害！！！
 
 被取消掉楼层的我:？？？？
-
-
-
-
-
-![image](https://github.com/forvv231/EasyNavigition/blob/master/screenshot/pre2.png)
