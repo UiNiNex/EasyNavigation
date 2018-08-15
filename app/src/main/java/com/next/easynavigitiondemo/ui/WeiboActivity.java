@@ -31,11 +31,11 @@ public class WeiboActivity extends AppCompatActivity {
 
     private EasyNavigitionBar navigitionBar;
 
-    private String[] tabText = {"首页", "发现", "消息", "我的"};
+    private String[] tabText = {"首页", "发现", "", "消息", "我的"};
     //未选中icon
-    private int[] normalIcon = {R.mipmap.index, R.mipmap.find, R.mipmap.message, R.mipmap.me};
+    private int[] normalIcon = {R.mipmap.index, R.mipmap.find, R.mipmap.add_image, R.mipmap.message, R.mipmap.me};
     //选中时icon
-    private int[] selectIcon = {R.mipmap.index1, R.mipmap.find1, R.mipmap.message1, R.mipmap.me1};
+    private int[] selectIcon = {R.mipmap.index1, R.mipmap.find1, R.mipmap.add_image, R.mipmap.message1, R.mipmap.me1};
 
     private List<android.support.v4.app.Fragment> fragments = new ArrayList<>();
 
@@ -72,21 +72,16 @@ public class WeiboActivity extends AppCompatActivity {
                             Toast.makeText(WeiboActivity.this, "请先登录", Toast.LENGTH_SHORT).show();
                             //return true则拦截事件、不进行页面切换
                             return true;
+                        } else if (position == 2) {
+                            //跳转页面（全民K歌）   或者   弹出菜单（微博）
+                            showMunu();
                         }
                         return false;
                     }
                 })
                 .mode(EasyNavigitionBar.MODE_ADD)
                 .anim(Anim.ZoomIn)
-                .addIcon(R.mipmap.add_image)
-                .onAddClickListener(new EasyNavigitionBar.OnAddClickListener() {
-                    @Override
-                    public boolean OnAddClickEvent(View view) {
-                        //跳转页面（全民K歌）   或者   弹出菜单（微博）
-                        showMunu();
-                        return false;
-                    }
-                }).build();
+                .build();
 
 
         navigitionBar.setAddViewLayout(createWeiboView());

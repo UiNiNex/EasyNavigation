@@ -18,7 +18,8 @@
         </activity>
         <activity android:name=".ui.NormalActivity" />
         <activity android:name=".ui.WeiboActivity" />
-        <activity android:name=".ui.AddActivity" />
+        <activity android:name=".ui.AddAsFragmentActivity" />
+        <activity android:name=".ui.AddViewActivity" />
     </application>
 
 </manifest>

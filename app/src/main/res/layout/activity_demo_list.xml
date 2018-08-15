@@ -16,8 +16,16 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:gravity="center"
-        android:onClick="AddNavigitionBar"
-        android:text="加号版本(Add)"
+        android:onClick="AddAsFragment"
+        android:text="加号切换Fragment版本(AddAsFragment)"
+        android:textSize="17sp" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:gravity="center"
+        android:onClick="AddView"
+        android:text="中间添加自定义的View(AddView)"
         android:textSize="17sp" />
 
     <Button

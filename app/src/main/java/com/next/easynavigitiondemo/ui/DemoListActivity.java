@@ -25,11 +25,17 @@ public class DemoListActivity extends AppCompatActivity {
         startActivity(new Intent(DemoListActivity.this, NormalActivity.class));
     }
 
-    public void AddNavigitionBar(View view) {
-        startActivity(new Intent(DemoListActivity.this, AddActivity.class));
+
+    public void AddAsFragment(View view) {
+        startActivity(new Intent(DemoListActivity.this, AddAsFragmentActivity.class));
+    }
+
+    public void AddView(View view) {
+        startActivity(new Intent(DemoListActivity.this, AddViewActivity.class));
     }
 
     public void OnWeibo(View view) {
         startActivity(new Intent(DemoListActivity.this, WeiboActivity.class));
     }
+
 }

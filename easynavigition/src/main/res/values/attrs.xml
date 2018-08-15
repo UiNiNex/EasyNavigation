@@ -65,6 +65,7 @@
             <flag name="RULE_CENTER" value="0" />
             <flag name="RULE_BOTTOM" value="1" />
         </attr>
+        <attr name="Easy_addAsFragment" format="boolean"/>
     </declare-styleable>
 
 </resources>

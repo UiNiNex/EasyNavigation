@@ -11,22 +11,22 @@ import com.next.easynavigitiondemo.ui.normal.NormalSecondFragment;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NormalActivity extends AppCompatActivity {
+public class AddAsFragmentActivity extends AppCompatActivity {
 
     private EasyNavigitionBar navigitionBar;
 
-    private String[] tabText = {"首页", "发现", "消息", "我的"};
+    private String[] tabText = {"首页", "发现", "", "消息", "我的"};
     //未选中icon
-    private int[] normalIcon = {R.mipmap.index, R.mipmap.find, R.mipmap.message, R.mipmap.me};
+    private int[] normalIcon = {R.mipmap.index, R.mipmap.find, R.mipmap.add_image, R.mipmap.message, R.mipmap.me};
     //选中时icon
-    private int[] selectIcon = {R.mipmap.index1, R.mipmap.find1, R.mipmap.message1, R.mipmap.me1};
+    private int[] selectIcon = {R.mipmap.index1, R.mipmap.find1, R.mipmap.add_image, R.mipmap.message1, R.mipmap.me1};
 
     private List<android.support.v4.app.Fragment> fragments = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_noadd);
+        setContentView(R.layout.activity_add);
 
         navigitionBar = findViewById(R.id.navigitionBar);
 
@@ -39,9 +39,10 @@ public class NormalActivity extends AppCompatActivity {
                 .normalIconItems(normalIcon)
                 .selectIconItems(selectIcon)
                 .fragmentList(fragments)
+                .mode(EasyNavigitionBar.MODE_ADD)
                 .fragmentManager(getSupportFragmentManager())
-                .canScroll(true)
                 .build();
+
     }
 
     public EasyNavigitionBar getNavigitionBar() {

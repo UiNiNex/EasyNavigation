@@ -213,6 +213,13 @@ onTabClickEvent方法中return true则拦截事件、不进行页面切换
  //调用第二个页面的方法
  ((SecondFragment) (((AddActivity) getActivity()).getNavigitionBar().getAdapter().getItem(1))).showToast("嘻嘻哈哈嗝");
 ```
+
+---
+# 更新
+
+删除 addIcon属性  直接将加号资源放入normalIconItems中
+
+
 ---
 # Demo
 github：[https://github.com/forvv231/EasyNavigition](https://github.com/forvv231/EasyNavigition)

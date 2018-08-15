@@ -2,6 +2,9 @@ package com.next.easynavigitiondemo.ui;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 
 import com.next.easynavigition.view.EasyNavigitionBar;
 import com.next.easynavigitiondemo.R;
@@ -11,7 +14,7 @@ import com.next.easynavigitiondemo.ui.normal.NormalSecondFragment;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AddActivity extends AppCompatActivity {
+public class AddViewActivity extends AppCompatActivity {
 
     private EasyNavigitionBar navigitionBar;
 
@@ -26,7 +29,7 @@ public class AddActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add);
+        setContentView(R.layout.activity_add_view);
 
         navigitionBar = findViewById(R.id.navigitionBar);
 
@@ -35,13 +38,23 @@ public class AddActivity extends AppCompatActivity {
         fragments.add(new NormalFirstFragment());
         fragments.add(new NormalSecondFragment());
 
+
+        View view = LayoutInflater.from(this).inflate(R.layout.custom_add_view, null);
+
         navigitionBar.titleItems(tabText)
                 .normalIconItems(normalIcon)
                 .selectIconItems(selectIcon)
                 .fragmentList(fragments)
-                .mode(EasyNavigitionBar.MODE_ADD)
-                .addIcon(R.mipmap.add_image)
+                .mode(EasyNavigitionBar.MODE_ADD_VIEW)
+                .addCustomView(view)
                 .fragmentManager(getSupportFragmentManager())
+                .onTabClickListener(new EasyNavigitionBar.OnTabClickListener() {
+                    @Override
+                    public boolean onTabClickEvent(View view, int position) {
+                        Log.e("Tap->Position", position + "");
+                        return false;
+                    }
+                })
                 .build();
 
     }
