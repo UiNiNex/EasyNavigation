@@ -19,8 +19,8 @@ import com.next.easynavigition.constant.Anim;
 import com.next.easynavigition.utils.NavigitionUtil;
 import com.next.easynavigition.view.EasyNavigitionBar;
 import com.next.easynavigitiondemo.R;
-import com.next.easynavigitiondemo.ui.weibo.AddFirstFragment;
-import com.next.easynavigitiondemo.ui.weibo.AddSecondFragment;
+import com.next.easynavigitiondemo.ui.weibo.WBFirstFragment;
+import com.next.easynavigitiondemo.ui.weibo.WBSecondFragment;
 import com.next.easynavigitiondemo.ui.weibo.AddThirdFragment;
 import com.next.easynavigitiondemo.view.KickBackAnimator;
 
@@ -55,10 +55,10 @@ public class WeiboActivity extends AppCompatActivity {
 
         navigitionBar = findViewById(R.id.navigitionBar);
 
-        fragments.add(new AddFirstFragment());
-        fragments.add(new AddSecondFragment());
+        fragments.add(new WBFirstFragment());
+        fragments.add(new WBSecondFragment());
         fragments.add(new AddThirdFragment());
-        fragments.add(new AddSecondFragment());
+        fragments.add(new WBSecondFragment());
 
         navigitionBar.titleItems(tabText)
                 .normalIconItems(normalIcon)

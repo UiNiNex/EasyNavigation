@@ -677,7 +677,7 @@ public class EasyNavigitionBar extends LinearLayout {
 
 
                 RelativeLayout.LayoutParams linearParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                linearParams.width = NavigitionUtil.getScreenWidth(getContext()) / tabCount;
+                //linearParams.width = NavigitionUtil.getScreenWidth(getContext()) / tabCount;
 
                 if (addIconRule == RULE_CENTER) {
                     linearParams.addRule(RelativeLayout.CENTER_IN_PARENT);
@@ -732,23 +732,24 @@ public class EasyNavigitionBar extends LinearLayout {
 
                 imageViewList.add(icon);
                 textViewList.add(text);
+                final int finalI = i;
                 itemView.setOnClickListener(new OnClickListener() {
                     public void onClick(View view) {
                         final int tabPosition = view.getId();
                         if (onTabClickListener != null) {
-                            if (!onTabClickListener.onTabClickEvent(view, view.getId())) {
+                            if (!onTabClickListener.onTabClickEvent(view, finalI)) {
 
-                                if (tabPosition > tabCount / 2 && !addAsFragment) {
-                                    mViewPager.setCurrentItem(tabPosition - 1, smoothScroll);
+                                if (finalI > tabCount / 2 && !addAsFragment) {
+                                    mViewPager.setCurrentItem(tabPosition, smoothScroll);
                                 } else {
-                                    mViewPager.setCurrentItem(view.getId(), smoothScroll);
+                                    mViewPager.setCurrentItem(finalI, smoothScroll);
                                 }
                             }
                         } else {
-                            if (tabPosition > tabCount / 2 && !addAsFragment) {
-                                mViewPager.setCurrentItem(tabPosition - 1, smoothScroll);
+                            if (finalI > tabCount / 2 && !addAsFragment) {
+                                mViewPager.setCurrentItem(tabPosition, smoothScroll);
                             } else {
-                                mViewPager.setCurrentItem(view.getId(), smoothScroll);
+                                mViewPager.setCurrentItem(finalI, smoothScroll);
                             }
                         }
                     }
@@ -814,11 +815,36 @@ public class EasyNavigitionBar extends LinearLayout {
      * @param position
      */
     private void select(int position, boolean showAnim) {
-        if (isTabdiff) {
+        if (mode == MODE_NORMAL) {
+            for (int i = 0; i < tabCount; i++) {
+                if (i == position) {
+                    if (anim != null && showAnim)
+                        YoYo.with(anim).duration(300).playOn(tabList.get(i));
+                    imageViewList.get(i).setImageResource(selectIconItems[i]);
+                    textViewList.get(i).setTextColor(selectTextColor);
+                } else {
+                    imageViewList.get(i).setImageResource(normalIconItems[i]);
+                    textViewList.get(i).setTextColor(normalTextColor);
+                }
+            }
+        } else if (mode == MODE_ADD) {
             if (addAsFragment) {
-
+                for (int i = 0; i < tabCount; i++) {
+                    if (i == position) {
+                        if (anim != null && showAnim)
+                            YoYo.with(anim).duration(300).playOn(tabList.get(i));
+                        imageViewList.get(i).setImageResource(selectIconItems[i]);
+                        textViewList.get(i).setTextColor(selectTextColor);
+                    } else {
+                        imageViewList.get(i).setImageResource(normalIconItems[i]);
+                        textViewList.get(i).setTextColor(normalTextColor);
+                    }
+                }
             } else {
-                for (int i = 0; i < tabCount-1; i++) {
+                if ((position > ((fragmentList.size() - 1) / 2))) {
+                    position = position + 1;
+                }
+                for (int i = 0; i < tabCount; i++) {
                     if (i == position) {
                         if (anim != null && showAnim)
                             YoYo.with(anim).duration(300).playOn(tabList.get(i));
@@ -830,19 +856,39 @@ public class EasyNavigitionBar extends LinearLayout {
                     }
                 }
             }
-        } else {
-            if ((position > ((fragmentList.size() - 1) / 2) && !addAsFragment)) {
-                position = position + 1;
-            }
-            for (int i = 0; i < tabCount; i++) {
-                if (i == position) {
-                    if (anim != null && showAnim)
-                        YoYo.with(anim).duration(300).playOn(tabList.get(i));
-                    imageViewList.get(i).setImageResource(selectIconItems[i]);
-                    textViewList.get(i).setTextColor(selectTextColor);
-                } else {
-                    imageViewList.get(i).setImageResource(normalIconItems[i]);
-                    textViewList.get(i).setTextColor(normalTextColor);
+        } else if (mode == MODE_ADD_VIEW) {
+            int realPosition;
+
+            if (addAsFragment) {
+                for (int i = 0; i < tabCount; i++) {
+                    if (i == tabCount / 2) {
+                        continue;
+                    } else if (i > tabCount / 2) {
+                        realPosition = i - 1;
+                    } else {
+                        realPosition = i;
+                    }
+                    if (i == position) {
+                        if (anim != null && showAnim)
+                            YoYo.with(anim).duration(300).playOn(tabList.get(realPosition));
+                        imageViewList.get(realPosition).setImageResource(selectIconItems[realPosition]);
+                        textViewList.get(realPosition).setTextColor(selectTextColor);
+                    } else {
+                        imageViewList.get(realPosition).setImageResource(normalIconItems[realPosition]);
+                        textViewList.get(realPosition).setTextColor(normalTextColor);
+                    }
+                }
+            } else {
+                for (int i = 0; i < tabCount - 1; i++) {
+                    if (i == position) {
+                        if (anim != null && showAnim)
+                            YoYo.with(anim).duration(300).playOn(tabList.get(i));
+                        imageViewList.get(i).setImageResource(selectIconItems[i]);
+                        textViewList.get(i).setTextColor(selectTextColor);
+                    } else {
+                        imageViewList.get(i).setImageResource(normalIconItems[i]);
+                        textViewList.get(i).setTextColor(normalTextColor);
+                    }
                 }
             }
         }

@@ -15,12 +15,12 @@ import com.next.easynavigitiondemo.ui.NormalActivity;
  * Created by Administrator on 2018/6/2.
  */
 
-public class AddFirstFragment extends android.support.v4.app.Fragment {
+public class WBFirstFragment extends android.support.v4.app.Fragment {
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_first, null);
+        View view = inflater.inflate(R.layout.fragment_wb_first, null);
 
         Button bt01 = view.findViewById(R.id.bt01);
         bt01.setOnClickListener(new View.OnClickListener() {
@@ -60,7 +60,7 @@ public class AddFirstFragment extends android.support.v4.app.Fragment {
             public void onClick(View view) {
                 if (getActivity() instanceof WeiboActivity) {
                     ((WeiboActivity) getActivity()).getNavigitionBar().selectTab(1);
-                    ((AddSecondFragment) (((WeiboActivity) getActivity()).getNavigitionBar().getAdapter().getItem(1))).showToast("嘻嘻哈哈嗝");
+                    ((WBSecondFragment) (((WeiboActivity) getActivity()).getNavigitionBar().getAdapter().getItem(1))).showToast("嘻嘻哈哈嗝");
                 }
             }
         });

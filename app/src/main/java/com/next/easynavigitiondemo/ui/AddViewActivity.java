@@ -8,8 +8,11 @@ import android.view.View;
 
 import com.next.easynavigition.view.EasyNavigitionBar;
 import com.next.easynavigitiondemo.R;
-import com.next.easynavigitiondemo.ui.normal.NormalFirstFragment;
-import com.next.easynavigitiondemo.ui.normal.NormalSecondFragment;
+import com.next.easynavigitiondemo.ui.normal.AFragment;
+import com.next.easynavigitiondemo.ui.normal.BFragment;
+import com.next.easynavigitiondemo.ui.normal.CFragment;
+import com.next.easynavigitiondemo.ui.normal.DFragment;
+import com.next.easynavigitiondemo.ui.normal.EFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,11 +36,11 @@ public class AddViewActivity extends AppCompatActivity {
 
         navigitionBar = findViewById(R.id.navigitionBar);
 
-        fragments.add(new NormalFirstFragment());
-        fragments.add(new NormalSecondFragment());
-        fragments.add(new NormalFirstFragment());
-        fragments.add(new NormalSecondFragment());
-
+        fragments.add(new AFragment());
+        fragments.add(new BFragment());
+        fragments.add(new CFragment());
+        fragments.add(new DFragment());
+        fragments.add(new EFragment());
 
         View view = LayoutInflater.from(this).inflate(R.layout.custom_add_view, null);
 
@@ -45,6 +48,8 @@ public class AddViewActivity extends AppCompatActivity {
                 .normalIconItems(normalIcon)
                 .selectIconItems(selectIcon)
                 .fragmentList(fragments)
+                .canScroll(true)
+                .addAsFragment(true)
                 .mode(EasyNavigitionBar.MODE_ADD_VIEW)
                 .addCustomView(view)
                 .fragmentManager(getSupportFragmentManager())

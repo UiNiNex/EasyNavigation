@@ -5,8 +5,10 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.next.easynavigition.view.EasyNavigitionBar;
 import com.next.easynavigitiondemo.R;
-import com.next.easynavigitiondemo.ui.normal.NormalFirstFragment;
-import com.next.easynavigitiondemo.ui.normal.NormalSecondFragment;
+import com.next.easynavigitiondemo.ui.normal.AFragment;
+import com.next.easynavigitiondemo.ui.normal.BFragment;
+import com.next.easynavigitiondemo.ui.normal.CFragment;
+import com.next.easynavigitiondemo.ui.normal.DFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,10 +32,10 @@ public class NormalActivity extends AppCompatActivity {
 
         navigitionBar = findViewById(R.id.navigitionBar);
 
-        fragments.add(new NormalFirstFragment());
-        fragments.add(new NormalSecondFragment());
-        fragments.add(new NormalFirstFragment());
-        fragments.add(new NormalSecondFragment());
+        fragments.add(new AFragment());
+        fragments.add(new BFragment());
+        fragments.add(new CFragment());
+        fragments.add(new DFragment());
 
         navigitionBar.titleItems(tabText)
                 .normalIconItems(normalIcon)
