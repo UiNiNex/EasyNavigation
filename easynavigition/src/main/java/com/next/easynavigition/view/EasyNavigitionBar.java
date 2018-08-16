@@ -831,7 +831,7 @@ public class EasyNavigitionBar extends LinearLayout {
             if (addAsFragment) {
                 for (int i = 0; i < tabCount; i++) {
                     if (i == position) {
-                        if (anim != null && showAnim)
+                        if (anim != null && showAnim && (position != tabCount / 2))
                             YoYo.with(anim).duration(300).playOn(tabList.get(i));
                         imageViewList.get(i).setImageResource(selectIconItems[i]);
                         textViewList.get(i).setTextColor(selectTextColor);
@@ -846,7 +846,7 @@ public class EasyNavigitionBar extends LinearLayout {
                 }
                 for (int i = 0; i < tabCount; i++) {
                     if (i == position) {
-                        if (anim != null && showAnim)
+                        if (anim != null && showAnim && (i == tabCount / 2))
                             YoYo.with(anim).duration(300).playOn(tabList.get(i));
                         imageViewList.get(i).setImageResource(selectIconItems[i]);
                         textViewList.get(i).setTextColor(selectTextColor);

@@ -58,7 +58,7 @@ public class WeiboActivity extends AppCompatActivity {
         fragments.add(new WBFirstFragment());
         fragments.add(new WBSecondFragment());
         fragments.add(new AddThirdFragment());
-        fragments.add(new WBSecondFragment());
+        fragments.add(new AddThirdFragment());
 
         navigitionBar.titleItems(tabText)
                 .normalIconItems(normalIcon)

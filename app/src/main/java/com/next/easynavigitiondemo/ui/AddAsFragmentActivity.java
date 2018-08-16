@@ -18,7 +18,7 @@ public class AddAsFragmentActivity extends AppCompatActivity {
 
     private EasyNavigitionBar navigitionBar;
 
-    private String[] tabText = {"首页", "发现", "", "消息", "我的"};
+    private String[] tabText = {"首页", "发现", "发布", "消息", "我的"};
     //未选中icon
     private int[] normalIcon = {R.mipmap.index, R.mipmap.find, R.mipmap.add_image, R.mipmap.message, R.mipmap.me};
     //选中时icon
