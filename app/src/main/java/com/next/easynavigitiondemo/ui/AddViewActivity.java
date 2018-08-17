@@ -49,7 +49,7 @@ public class AddViewActivity extends AppCompatActivity {
                 .selectIconItems(selectIcon)
                 .fragmentList(fragments)
                 .canScroll(true)
-                .addAsFragment(true)
+                .addAsFragment(false)
                 .mode(EasyNavigitionBar.MODE_ADD_VIEW)
                 .addCustomView(view)
                 .fragmentManager(getSupportFragmentManager())

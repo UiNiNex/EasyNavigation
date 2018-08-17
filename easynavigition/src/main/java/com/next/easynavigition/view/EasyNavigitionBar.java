@@ -1,8 +1,11 @@
 package com.next.easynavigition.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -79,7 +82,7 @@ public class EasyNavigitionBar extends LinearLayout {
     private FragmentManager fragmentManager;
 
     //Tab点击动画效果
-    private Techniques anim = null;
+    private Techniques anim = Techniques.ZoomIn;
     //ViewPager切换动画
     private boolean smoothScroll = false;
     //图标大小
@@ -104,7 +107,7 @@ public class EasyNavigitionBar extends LinearLayout {
     //Tab文字距Tab图标的距离
     private float tabTextTop = 2;
     //Tab文字大小
-    private float tabTextSize = 10;
+    private float tabTextSize = 12;
     //未选中Tab字体颜色
     private int normalTextColor = Color.parseColor("#666666");
     //选中字体颜色
@@ -152,7 +155,11 @@ public class EasyNavigitionBar extends LinearLayout {
     //false 点击加号不切换fragment进行其他操作（跳转界面等）
     private boolean addAsFragment = false;
     private View customAddView;
-    private boolean isTabdiff = false;
+    private float addTextSize;
+    private int addNormalTextColor;
+    private int addSelectTextColor;
+    private float addTopMargin = 3;
+    private boolean addAlignBottom = true;
 
 
     public EasyNavigitionBar(Context context) {
@@ -205,6 +212,13 @@ public class EasyNavigitionBar extends LinearLayout {
             msgPointTextSize = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_msgPointTextSize, msgPointTextSize);
             addIconSize = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_addIconSize, addIconSize);
             addIconBottom = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_addIconBottom, addIconBottom);
+
+            //加号属性
+            addSelectTextColor = attributes.getColor(R.styleable.EasyNavigitionBar_Easy_addSelectTextColor, addSelectTextColor);
+            addNormalTextColor = attributes.getColor(R.styleable.EasyNavigitionBar_Easy_addNormalTextColor, addNormalTextColor);
+            addTextSize = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_addTextSize, addTextSize);
+            addTopMargin = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_addTopMargin, addTopMargin);
+            addAlignBottom = attributes.getBoolean(R.styleable.EasyNavigitionBar_Easy_addAlignBottom, addAlignBottom);
 
 
             lineHeight = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_lineHeight, lineHeight);
@@ -265,6 +279,8 @@ public class EasyNavigitionBar extends LinearLayout {
         addIconSize = NavigitionUtil.dip2px(getContext(), addIconSize);
         addLayoutHeight = NavigitionUtil.dip2px(getContext(), addLayoutHeight);
         addIconBottom = NavigitionUtil.dip2px(getContext(), addIconBottom);
+        addTextSize = NavigitionUtil.sp2px(getContext(), addTextSize);
+        addTopMargin = NavigitionUtil.dip2px(getContext(), addTopMargin);
     }
 
 
@@ -302,6 +318,17 @@ public class EasyNavigitionBar extends LinearLayout {
         lineView.setBackgroundColor(lineColor);
         lineView.setLayoutParams(lineParams);
 
+//若没有设置中间添加的文字字体大小、颜色、则同其他Tab一样
+        if (addTextSize == 0) {
+            addTextSize = tabTextSize;
+        }
+        if (addNormalTextColor == 0) {
+            addNormalTextColor = normalTextColor;
+        }
+        if (addSelectTextColor == 0) {
+            addSelectTextColor = selectTextColor;
+        }
+
         if (mode == MODE_NORMAL) {
             buildNavigition();
         } else if (mode == MODE_ADD) {
@@ -314,12 +341,13 @@ public class EasyNavigitionBar extends LinearLayout {
         } else {
             getmViewPager().setCanScroll(false);
         }
-        select(0, false);
     }
 
     public void buildNavigition() {
-        if ((titleItems.length != normalIconItems.length) || (titleItems.length != selectIconItems.length) || (normalIconItems.length != selectIconItems.length))
+        if ((titleItems.length != normalIconItems.length) || (titleItems.length != selectIconItems.length) || (normalIconItems.length != selectIconItems.length)) {
+            Log.e("EasyNavigition", "请传入相同数量的Tab文字集合、未选中图标集合、选中图标集合");
             return;
+        }
 
         tabCount = titleItems.length;
 
@@ -417,16 +445,19 @@ public class EasyNavigitionBar extends LinearLayout {
             tabList.add(itemView);
             navigitionLayout.addView(itemView);
         }
-
+        select(0, false);
     }
 
     //构建中间带按钮的navigition
     public void buildAddNavigition() {
-        if ((titleItems.length != normalIconItems.length) || (titleItems.length != selectIconItems.length) || (normalIconItems.length != selectIconItems.length))
+        if ((titleItems.length != normalIconItems.length) || (titleItems.length != selectIconItems.length) || (normalIconItems.length != selectIconItems.length)) {
+            Log.e("EasyNavigition", "请传入相同数量的Tab文字集合、未选中图标集合、选中图标集合");
             return;
+        }
         tabCount = titleItems.length;
-        if (addAsFragment && fragmentList.size() != tabCount) {
-            Log.e("EasyNavigition", "设置addAsFragment= true时，请检查传入fragment数量的数量");
+        if (tabCount % 2 == 0) {
+            Log.e("EasyNavigition", "MODE_ADD模式下请传入奇奇奇奇奇奇奇奇奇奇奇数数量的Tab文字集合、未选中图标集合、选中图标集合");
+            return;
         }
         int index = 0;
 
@@ -479,10 +510,10 @@ public class EasyNavigitionBar extends LinearLayout {
                 }
 
 
-                LinearLayout addLinear = new LinearLayout(getContext());
+                final LinearLayout addLinear = new LinearLayout(getContext());
                 addLinear.setOrientation(VERTICAL);
                 addLinear.setGravity(Gravity.CENTER);
-                RelativeLayout.LayoutParams linearParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                final RelativeLayout.LayoutParams linearParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
                 ImageView addImage = new ImageView(getContext());
                 LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -491,7 +522,9 @@ public class EasyNavigitionBar extends LinearLayout {
                 addImage.setLayoutParams(imageParams);
 
                 TextView addText = new TextView(getContext());
+                addText.setTextSize(NavigitionUtil.px2sp(getContext(), addTextSize));
                 LinearLayout.LayoutParams addTextParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                addTextParams.topMargin = (int) addTopMargin;
                 if (TextUtils.isEmpty(titleItems[i])) {
                     addText.setVisibility(GONE);
                 } else {
@@ -505,9 +538,19 @@ public class EasyNavigitionBar extends LinearLayout {
                 } else if (addIconRule == RULE_BOTTOM) {
                     linearParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
                     linearParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                    linearParams.bottomMargin = (int) addIconBottom;
+                    if (addAlignBottom) {
+                        if (textViewList != null && textViewList.size() > 0) {
+                            textViewList.get(0).post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    linearParams.bottomMargin = (int) ((navigitionHeight - textViewList.get(0).getHeight() - iconSize - tabTextTop) / 2);
+                                    addLinear.setLayoutParams(linearParams);
+                                }
+                            });
+
+                        }
+                    }
                 }
-                addLinear.setLayoutParams(linearParams);
 
                 addImage.setId(i);
                 addImage.setImageResource(normalIconItems[i]);
@@ -528,7 +571,6 @@ public class EasyNavigitionBar extends LinearLayout {
                     }
                 });
 
-
                 imageViewList.add(addImage);
                 textViewList.add(addText);
 
@@ -536,18 +578,13 @@ public class EasyNavigitionBar extends LinearLayout {
                 addLinear.addView(addImage);
                 addLinear.addView(addText);
 
+                tabList.add(addLinear);
+
                 addLayout.addView(addLinear, linearParams);
                 AddContainerLayout.addView(addLayout, addParams);
             } else {
 
                 index = i;
-                /*if (!addAsFragment) {
-                    if (i > tabCount / 2) {
-                        index = i - 1;
-                    } else {
-                        index = i;
-                    }
-                }*/
 
                 View itemView = View.inflate(getContext(), R.layout.navigition_tab_layout, null);
                 RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.MATCH_PARENT);
@@ -624,17 +661,23 @@ public class EasyNavigitionBar extends LinearLayout {
                 navigitionLayout.addView(itemView);
             }
         }
-
+        select(0, false);
     }
 
 
     //自定义中间按钮
     public void buildAddViewNavigition() {
-        isTabdiff = true;
-        if ((titleItems.length != normalIconItems.length) || (titleItems.length != selectIconItems.length) || (normalIconItems.length != selectIconItems.length))
+        if ((titleItems.length != normalIconItems.length) || (titleItems.length != selectIconItems.length) || (normalIconItems.length != selectIconItems.length)) {
+            Log.e("EasyNavigition", "请传入相同数量的Tab文字集合、未选中图标集合、选中图标集合");
             return;
-
+        }
         tabCount = titleItems.length + 1;
+        if (tabCount % 2 == 0) {
+            Log.e("EasyNavigition", "MODE_ADD_VIEW模式下请传入偶偶偶偶偶偶偶偶偶偶偶偶数数量的Tab文字集合、未选中图标集合、选中图标集合");
+            return;
+        }
+
+
         int index = 0;
 
 
@@ -792,6 +835,8 @@ public class EasyNavigitionBar extends LinearLayout {
             }
         }
 
+        select(0, false);
+
     }
 
 
@@ -833,26 +878,42 @@ public class EasyNavigitionBar extends LinearLayout {
                     if (i == position) {
                         if (anim != null && showAnim && (position != tabCount / 2))
                             YoYo.with(anim).duration(300).playOn(tabList.get(i));
+                        if (i == tabCount / 2) {
+                            textViewList.get(i).setTextColor(addSelectTextColor);
+                        } else {
+                            textViewList.get(i).setTextColor(selectTextColor);
+                        }
                         imageViewList.get(i).setImageResource(selectIconItems[i]);
-                        textViewList.get(i).setTextColor(selectTextColor);
                     } else {
                         imageViewList.get(i).setImageResource(normalIconItems[i]);
-                        textViewList.get(i).setTextColor(normalTextColor);
+                        if (i == tabCount / 2) {
+                            textViewList.get(i).setTextColor(addNormalTextColor);
+                        } else {
+                            textViewList.get(i).setTextColor(normalTextColor);
+                        }
                     }
                 }
             } else {
-                if ((position > ((fragmentList.size() - 1) / 2))) {
+                if ((position > ((tabCount - 2) / 2))) {
                     position = position + 1;
                 }
                 for (int i = 0; i < tabCount; i++) {
                     if (i == position) {
-                        if (anim != null && showAnim && (i == tabCount / 2))
+                        if (anim != null && showAnim && (i != tabCount / 2))
                             YoYo.with(anim).duration(300).playOn(tabList.get(i));
                         imageViewList.get(i).setImageResource(selectIconItems[i]);
-                        textViewList.get(i).setTextColor(selectTextColor);
+                        if (i == tabCount / 2) {
+                            textViewList.get(i).setTextColor(addSelectTextColor);
+                        } else {
+                            textViewList.get(i).setTextColor(selectTextColor);
+                        }
                     } else {
                         imageViewList.get(i).setImageResource(normalIconItems[i]);
-                        textViewList.get(i).setTextColor(normalTextColor);
+                        if (i == tabCount / 2) {
+                            textViewList.get(i).setTextColor(addNormalTextColor);
+                        } else {
+                            textViewList.get(i).setTextColor(normalTextColor);
+                        }
                     }
                 }
             }
@@ -954,7 +1015,6 @@ public class EasyNavigitionBar extends LinearLayout {
             msgPointList.get(i).setVisibility(GONE);
         }
     }
-
 
     public interface OnTabClickListener {
         boolean onTabClickEvent(View view, int position);
@@ -1147,6 +1207,30 @@ public class EasyNavigitionBar extends LinearLayout {
         return this;
     }
 
+    public EasyNavigitionBar addTextSize(int addTextSize) {
+        this.addTextSize = NavigitionUtil.sp2px(getContext(), addTextSize);
+        return this;
+    }
+
+    public EasyNavigitionBar addNormalTextColor(int addNormalTextColor) {
+        this.addNormalTextColor = addNormalTextColor;
+        return this;
+    }
+
+    public EasyNavigitionBar addSelectTextColor(int addSelectTextColor) {
+        this.addSelectTextColor = addSelectTextColor;
+        return this;
+    }
+
+    public EasyNavigitionBar addTopMargin(int addTopMargin) {
+        this.addTopMargin = NavigitionUtil.dip2px(getContext(), addTopMargin);
+        return this;
+    }
+
+    public EasyNavigitionBar addAlignBottom(boolean addAlignBottom) {
+        this.addAlignBottom = addAlignBottom;
+        return this;
+    }
 
     public String[] getTitleItems() {
         return titleItems;

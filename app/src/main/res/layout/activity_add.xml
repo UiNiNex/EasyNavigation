@@ -10,9 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:Easy_addIconRule="RULE_BOTTOM"
-        app:Easy_addIconSize="60dp"
-        app:Easy_tabTextSize="12sp"
-        app:Easy_addIconBottom="10dp">
+        app:Easy_addIconSize="50dp">
 
     </com.next.easynavigition.view.EasyNavigitionBar>
 

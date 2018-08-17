@@ -1,7 +1,10 @@
 package com.next.easynavigitiondemo.ui;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.View;
 
 import com.next.easynavigition.view.EasyNavigitionBar;
 import com.next.easynavigitiondemo.R;
@@ -37,11 +40,20 @@ public class AddAsFragmentActivity extends AppCompatActivity {
         fragments.add(new BFragment());
         fragments.add(new CFragment());
         fragments.add(new DFragment());
+        fragments.add(new EFragment());
 
         navigitionBar.titleItems(tabText)
                 .normalIconItems(normalIcon)
                 .selectIconItems(selectIcon)
                 .fragmentList(fragments)
+                .addAsFragment(true)
+                .onTabClickListener(new EasyNavigitionBar.OnTabClickListener() {
+                    @Override
+                    public boolean onTabClickEvent(View view, int position) {
+                        Log.e("onTabClickEvent", position + "");
+                        return false;
+                    }
+                })
                 .canScroll(true)
                 .mode(EasyNavigitionBar.MODE_ADD)
                 .fragmentManager(getSupportFragmentManager())

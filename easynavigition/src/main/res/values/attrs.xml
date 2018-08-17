@@ -66,6 +66,14 @@
             <flag name="RULE_BOTTOM" value="1" />
         </attr>
         <attr name="Easy_addAsFragment" format="boolean"/>
+        <attr name="Easy_addSelectTextColor" format="color"/>
+        <attr name="Easy_addNormalTextColor" format="color"/>
+        <attr name="Easy_addTextSize" format="dimension"/>
+        <attr name="Easy_addTopMargin" format="dimension"/>
+        <attr name="Easy_addAlignBottom" format="dimension"/>
+
+
+
     </declare-styleable>
 
 </resources>
