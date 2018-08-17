@@ -182,7 +182,8 @@ public class EasyNavigitionBar extends LinearLayout {
         navigitionLayout = contentView.findViewById(R.id.navigition_ll);
         mViewPager = contentView.findViewById(R.id.mViewPager);
         lineView = contentView.findViewById(R.id.common_horizontal_line);
-
+        lineView.setTag(-100);
+        navigitionLayout.setTag(-100);
 
         toDp();
 
@@ -459,6 +460,26 @@ public class EasyNavigitionBar extends LinearLayout {
             Log.e("EasyNavigition", "MODE_ADD模式下请传入奇奇奇奇奇奇奇奇奇奇奇数数量的Tab文字集合、未选中图标集合、选中图标集合");
             return;
         }
+
+        if (addAsFragment) {
+            if (fragmentList.size() < tabCount) {
+                Log.e("EasyNavigition", "MODE_ADD模式下/addAsFragment=true时Fragment的数量应和传入tab集合数量相等");
+                return;
+            }
+        } else {
+            if (fragmentList.size() < tabCount - 1) {
+                Log.e("EasyNavigition", "MODE_ADD模式下/addAsFragment=false时Fragment的数量应比传入tab集合数量少一个");
+                return;
+            }
+        }
+
+        for (int i = 0; i < AddContainerLayout.getChildCount(); i++) {
+            if (AddContainerLayout.getChildAt(i).getTag() ==null) {
+                AddContainerLayout.removeViewAt(i);
+            }
+        }
+
+
         int index = 0;
 
 
@@ -676,6 +697,17 @@ public class EasyNavigitionBar extends LinearLayout {
             Log.e("EasyNavigition", "MODE_ADD_VIEW模式下请传入偶偶偶偶偶偶偶偶偶偶偶偶数数量的Tab文字集合、未选中图标集合、选中图标集合");
             return;
         }
+        if (addAsFragment) {
+            if (fragmentList.size() < tabCount) {
+                Log.e("EasyNavigition", "MODE_ADD_VIEW模式下/addAsFragment=true时Fragment的数量应比传入tab集合数量多一个");
+                return;
+            }
+        } else {
+            if (fragmentList.size() < tabCount - 1) {
+                Log.e("EasyNavigition", "MODE_ADD_VIEW模式下/addAsFragment=false时,Fragment的数量应和传入tab集合数量相等");
+                return;
+            }
+        }
 
 
         int index = 0;
@@ -686,6 +718,11 @@ public class EasyNavigitionBar extends LinearLayout {
         imageViewList.clear();
         textViewList.clear();
         tabList.clear();
+        for (int i = 0; i < AddContainerLayout.getChildCount(); i++) {
+            if (AddContainerLayout.getChildAt(i).getTag() ==null) {
+                AddContainerLayout.removeViewAt(i);
+            }
+        }
 
         navigitionLayout.removeAllViews();
 
@@ -1389,5 +1426,33 @@ public class EasyNavigitionBar extends LinearLayout {
 
     public boolean isHasPadding() {
         return hasPadding;
+    }
+
+    public boolean isAddAsFragment() {
+        return addAsFragment;
+    }
+
+    public View getCustomAddView() {
+        return customAddView;
+    }
+
+    public float getAddTextSize() {
+        return addTextSize;
+    }
+
+    public int getAddNormalTextColor() {
+        return addNormalTextColor;
+    }
+
+    public int getAddSelectTextColor() {
+        return addSelectTextColor;
+    }
+
+    public float getAddTopMargin() {
+        return addTopMargin;
+    }
+
+    public boolean isAddAlignBottom() {
+        return addAlignBottom;
     }
 }

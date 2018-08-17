@@ -1,5 +1,6 @@
 package com.next.easynavigitiondemo.ui;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -23,7 +24,7 @@ public class AddViewActivity extends AppCompatActivity {
 
     private String[] tabText = {"首页", "发现", "消息", "我的"};
     //未选中icon
-    private int[] normalIcon = {R.mipmap.index, R.mipmap.find, R.mipmap.message, R.mipmap.me};
+    private int[] normalIcon = {R.mipmap.index, R.mipmap.find, R.mipmap.message,R.mipmap.me};
     //选中时icon
     private int[] selectIcon = {R.mipmap.index1, R.mipmap.find1, R.mipmap.message1, R.mipmap.me1};
 
@@ -40,7 +41,6 @@ public class AddViewActivity extends AppCompatActivity {
         fragments.add(new BFragment());
         fragments.add(new CFragment());
         fragments.add(new DFragment());
-        fragments.add(new EFragment());
 
         View view = LayoutInflater.from(this).inflate(R.layout.custom_add_view, null);
 
