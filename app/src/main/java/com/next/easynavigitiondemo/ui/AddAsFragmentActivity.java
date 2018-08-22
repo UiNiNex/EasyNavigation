@@ -2,6 +2,7 @@ package com.next.easynavigitiondemo.ui;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -28,6 +29,9 @@ public class AddAsFragmentActivity extends AppCompatActivity {
     private int[] selectIcon = {R.mipmap.index1, R.mipmap.find1, R.mipmap.add_image, R.mipmap.message1, R.mipmap.me1};
 
     private List<android.support.v4.app.Fragment> fragments = new ArrayList<>();
+    private Handler mHandler = new Handler();
+
+    private boolean flag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +55,20 @@ public class AddAsFragmentActivity extends AppCompatActivity {
                     @Override
                     public boolean onTabClickEvent(View view, int position) {
                         Log.e("onTabClickEvent", position + "");
+                        if (position == 2) {
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    //＋ 旋转动画
+                                    if (flag) {
+                                        navigitionBar.getAddImage().animate().rotation(45).setDuration(400);
+                                    } else {
+                                        navigitionBar.getAddImage().animate().rotation(0).setDuration(400);
+                                    }
+                                    flag = !flag;
+                                }
+                            });
+                        }
                         return false;
                     }
                 })

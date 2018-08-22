@@ -131,10 +131,10 @@ public class EasyNavigitionBar extends LinearLayout {
     public static final int MODE_ADD = 1;
     public static final int MODE_ADD_VIEW = 2;
 
-    private float addIconBottom = 10;
+    private float addLayoutBottom = 10;
 
-    //RULE_CENTER 居中只需调节addLayoutHeight 默认和navigitionHeight相等 此时addIconBottom属性无效
-    //RULE_BOTTOM addLayoutHeight属性无效、自适应、只需调节addIconBottom距底部的距离
+    //RULE_CENTER 居中只需调节addLayoutHeight 默认和navigitionHeight相等 此时addLayoutBottom属性无效
+    //RULE_BOTTOM addLayoutHeight属性无效、自适应、只需调节addLayoutBottom距底部的距离
     private int addIconRule = RULE_CENTER;
 
     public static final int RULE_CENTER = 0;
@@ -151,12 +151,18 @@ public class EasyNavigitionBar extends LinearLayout {
     //true 点击加号切换fragment
     //false 点击加号不切换fragment进行其他操作（跳转界面等）
     private boolean addAsFragment = false;
+    //自定义加号view
     private View customAddView;
     private float addTextSize;
+    //加号文字未选中颜色（默认同其他tab）
     private int addNormalTextColor;
+    //加号文字选中颜色（默认同其他tab）
     private int addSelectTextColor;
-    private float addTopMargin = 3;
+    //加号文字距离顶部加号的距离
+    private float addTextTopMargin = 3;
+    //是否和其他tab文字底部对齐
     private boolean addAlignBottom = true;
+    private ImageView addImage;
 
 
     public EasyNavigitionBar(Context context) {
@@ -209,13 +215,13 @@ public class EasyNavigitionBar extends LinearLayout {
             msgPointLeft = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_msgPointLeft, -iconSize / 2);
             msgPointTextSize = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_msgPointTextSize, msgPointTextSize);
             addIconSize = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_addIconSize, addIconSize);
-            addIconBottom = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_addIconBottom, addIconBottom);
+            addLayoutBottom = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_addIconBottom, addLayoutBottom);
 
             //加号属性
             addSelectTextColor = attributes.getColor(R.styleable.EasyNavigitionBar_Easy_addSelectTextColor, addSelectTextColor);
             addNormalTextColor = attributes.getColor(R.styleable.EasyNavigitionBar_Easy_addNormalTextColor, addNormalTextColor);
             addTextSize = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_addTextSize, addTextSize);
-            addTopMargin = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_addTopMargin, addTopMargin);
+            addTextTopMargin = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_addTextTopMargin, addTextTopMargin);
             addAlignBottom = attributes.getBoolean(R.styleable.EasyNavigitionBar_Easy_addAlignBottom, addAlignBottom);
 
 
@@ -276,9 +282,9 @@ public class EasyNavigitionBar extends LinearLayout {
         //Add
         addIconSize = NavigitionUtil.dip2px(getContext(), addIconSize);
         addLayoutHeight = NavigitionUtil.dip2px(getContext(), addLayoutHeight);
-        addIconBottom = NavigitionUtil.dip2px(getContext(), addIconBottom);
+        addLayoutBottom = NavigitionUtil.dip2px(getContext(), addLayoutBottom);
         addTextSize = NavigitionUtil.sp2px(getContext(), addTextSize);
-        addTopMargin = NavigitionUtil.dip2px(getContext(), addTopMargin);
+        addTextTopMargin = NavigitionUtil.dip2px(getContext(), addTextTopMargin);
     }
 
 
@@ -498,7 +504,7 @@ public class EasyNavigitionBar extends LinearLayout {
                 addLinear.setGravity(Gravity.CENTER);
                 final RelativeLayout.LayoutParams linearParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-                ImageView addImage = new ImageView(getContext());
+                 addImage = new ImageView(getContext());
                 LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 imageParams.width = (int) addIconSize;
                 imageParams.height = (int) addIconSize;
@@ -507,7 +513,7 @@ public class EasyNavigitionBar extends LinearLayout {
                 TextView addText = new TextView(getContext());
                 addText.setTextSize(NavigitionUtil.px2sp(getContext(), addTextSize));
                 LinearLayout.LayoutParams addTextParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                addTextParams.topMargin = (int) addTopMargin;
+                addTextParams.topMargin = (int) addTextTopMargin;
                 if (TextUtils.isEmpty(titleItems[i])) {
                     addText.setVisibility(GONE);
                 } else {
@@ -532,6 +538,9 @@ public class EasyNavigitionBar extends LinearLayout {
                             });
 
                         }
+                    }else{
+                        linearParams.bottomMargin = (int) addLayoutBottom;
+                        addLinear.setLayoutParams(linearParams);
                     }
                 }
 
@@ -811,7 +820,7 @@ public class EasyNavigitionBar extends LinearLayout {
                 } else if (addIconRule == RULE_BOTTOM) {
                     linearParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
                     linearParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                    linearParams.bottomMargin = (int) addIconBottom;
+                    linearParams.bottomMargin = (int) addLayoutBottom;
                 }
                 customAddView.setLayoutParams(linearParams);
 
@@ -1158,10 +1167,10 @@ public class EasyNavigitionBar extends LinearLayout {
         return this;
     }
 
-    public EasyNavigitionBar onAddClickListener(EasyNavigitionBar.OnAddClickListener onAddClickListener) {
+ /*   public EasyNavigitionBar onAddClickListener(EasyNavigitionBar.OnAddClickListener onAddClickListener) {
         this.onAddClickListener = onAddClickListener;
         return this;
-    }
+    }*/
 
 
     public EasyNavigitionBar navigitionBackground(int navigitionBackground) {
@@ -1298,8 +1307,8 @@ public class EasyNavigitionBar extends LinearLayout {
         return this;
     }
 
-    public EasyNavigitionBar addIconBottom(int addIconBottom) {
-        this.addIconBottom = NavigitionUtil.dip2px(getContext(), addIconBottom);
+    public EasyNavigitionBar addLayoutBottom(int addLayoutBottom) {
+        this.addLayoutBottom = NavigitionUtil.dip2px(getContext(), addLayoutBottom);
         return this;
     }
 
@@ -1328,8 +1337,8 @@ public class EasyNavigitionBar extends LinearLayout {
         return this;
     }
 
-    public EasyNavigitionBar addTopMargin(int addTopMargin) {
-        this.addTopMargin = NavigitionUtil.dip2px(getContext(), addTopMargin);
+    public EasyNavigitionBar addTextTopMargin(int addTextTopMargin) {
+        this.addTextTopMargin = NavigitionUtil.dip2px(getContext(), addTextTopMargin);
         return this;
     }
 
@@ -1481,8 +1490,8 @@ public class EasyNavigitionBar extends LinearLayout {
         return addViewLayout;
     }
 
-    public float getAddIconBottom() {
-        return addIconBottom;
+    public float getAddLayoutBottom() {
+        return addLayoutBottom;
     }
 
     public int getAddIconRule() {
@@ -1517,11 +1526,17 @@ public class EasyNavigitionBar extends LinearLayout {
         return addSelectTextColor;
     }
 
-    public float getAddTopMargin() {
-        return addTopMargin;
+    public float getAddTextTopMargin() {
+        return addTextTopMargin;
     }
 
     public boolean isAddAlignBottom() {
         return addAlignBottom;
     }
+
+    public ImageView getAddImage() {
+        return addImage;
+    }
+
+   // --addIconBottom
 }

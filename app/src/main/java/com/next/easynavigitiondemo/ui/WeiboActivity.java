@@ -187,7 +187,7 @@ public class WeiboActivity extends AppCompatActivity {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                cancelImageView.animate().rotation(-90).setDuration(400);
+                cancelImageView.animate().rotation(0).setDuration(400);
             }
         });
 
