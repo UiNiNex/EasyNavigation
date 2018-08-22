@@ -30,10 +30,6 @@ public class WBFirstFragment extends android.support.v4.app.Fragment {
                     ((WeiboActivity) getActivity()).getNavigitionBar().setMsgPointCount(2, 109);
                     ((WeiboActivity) getActivity()).getNavigitionBar().setMsgPointCount(0, 5);
                     ((WeiboActivity) getActivity()).getNavigitionBar().setHintPoint(3, true);
-                } else if (getActivity() instanceof NormalActivity) {
-                    ((NormalActivity) getActivity()).getNavigitionBar().setMsgPointCount(2, 109);
-                    ((NormalActivity) getActivity()).getNavigitionBar().setMsgPointCount(0, 5);
-                    ((NormalActivity) getActivity()).getNavigitionBar().setHintPoint(3, true);
                 }
             }
         });
@@ -44,11 +40,8 @@ public class WBFirstFragment extends android.support.v4.app.Fragment {
             @Override
             public void onClick(View view) {
                 if (getActivity() instanceof WeiboActivity) {
-                    ((WeiboActivity) getActivity()).getNavigitionBar().clearAllMsgPoint();
                     ((WeiboActivity) getActivity()).getNavigitionBar().clearAllHintPoint();
-                } else if (getActivity() instanceof NormalActivity) {
-                    ((NormalActivity) getActivity()).getNavigitionBar().clearAllMsgPoint();
-                    ((NormalActivity) getActivity()).getNavigitionBar().clearAllHintPoint();
+                    ((WeiboActivity) getActivity()).getNavigitionBar().clearAllMsgPoint();
                 }
 
             }
@@ -59,12 +52,34 @@ public class WBFirstFragment extends android.support.v4.app.Fragment {
             @Override
             public void onClick(View view) {
                 if (getActivity() instanceof WeiboActivity) {
-                    ((WeiboActivity) getActivity()).getNavigitionBar().selectTab(1);
-                    ((WBSecondFragment) (((WeiboActivity) getActivity()).getNavigitionBar().getAdapter().getItem(1))).showToast("嘻嘻哈哈嗝");
+                    ((WeiboActivity) getActivity()).getNavigitionBar().clearMsgPoint(0);
                 }
             }
         });
 
+
+        Button bt04 = view.findViewById(R.id.bt04);
+        bt04.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (getActivity() instanceof WeiboActivity) {
+                    ((WeiboActivity) getActivity()).getNavigitionBar().clearHintPoint(3);
+
+                }
+            }
+        });
+
+        Button bt05 = view.findViewById(R.id.bt05);
+        bt05.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (getActivity() instanceof WeiboActivity) {
+                    ((WeiboActivity) getActivity()).getNavigitionBar().selectTab(1);
+                    ((WBSecondFragment) (((WeiboActivity) getActivity()).getNavigitionBar().getAdapter().getItem(1))).showToast("嘻嘻哈哈嗝");
+
+                }
+            }
+        });
 
         return view;
     }

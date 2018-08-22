@@ -1,11 +1,8 @@
 package com.next.easynavigition.view;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -352,33 +349,9 @@ public class EasyNavigitionBar extends LinearLayout {
 
         tabCount = titleItems.length;
 
-        hintPointList.clear();
-        imageViewList.clear();
-        textViewList.clear();
+        removeNavigationAllView();
 
-        tabList.clear();
-
-        navigitionLayout.removeAllViews();
-
-        adapter = new ViewPagerAdapter(fragmentManager, fragmentList);
-        mViewPager.setAdapter(adapter);
-        mViewPager.setOffscreenPageLimit(3);
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                select(position, true);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
+        setViewPagerAdapter();
 
         for (int i = 0; i < tabCount; i++) {
             View itemView = View.inflate(getContext(), R.layout.navigition_tab_layout, null);
@@ -449,8 +422,31 @@ public class EasyNavigitionBar extends LinearLayout {
         select(0, false);
     }
 
+    private void setViewPagerAdapter() {
+        adapter = new ViewPagerAdapter(fragmentManager, fragmentList);
+        mViewPager.setAdapter(adapter);
+        mViewPager.setOffscreenPageLimit(3);
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                select(position, true);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+    }
+
     //构建中间带按钮的navigition
     public void buildAddNavigition() {
+
         if ((titleItems.length != normalIconItems.length) || (titleItems.length != selectIconItems.length) || (normalIconItems.length != selectIconItems.length)) {
             Log.e("EasyNavigition", "请传入相同数量的Tab文字集合、未选中图标集合、选中图标集合");
             return;
@@ -473,43 +469,9 @@ public class EasyNavigitionBar extends LinearLayout {
             }
         }
 
-        for (int i = 0; i < AddContainerLayout.getChildCount(); i++) {
-            if (AddContainerLayout.getChildAt(i).getTag() ==null) {
-                AddContainerLayout.removeViewAt(i);
-            }
-        }
+        removeNavigationAllView();
 
-
-        int index = 0;
-
-
-        hintPointList.clear();
-        hintPointList.clear();
-        imageViewList.clear();
-        textViewList.clear();
-        tabList.clear();
-
-        navigitionLayout.removeAllViews();
-
-        adapter = new ViewPagerAdapter(fragmentManager, fragmentList);
-        mViewPager.setOffscreenPageLimit(3);
-        mViewPager.setAdapter(adapter);
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                select(position, true);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
+        setViewPagerAdapter();
 
         for (int i = 0; i < tabCount; i++) {
 
@@ -604,8 +566,7 @@ public class EasyNavigitionBar extends LinearLayout {
                 addLayout.addView(addLinear, linearParams);
                 AddContainerLayout.addView(addLayout, addParams);
             } else {
-
-                index = i;
+                int index = i;
 
                 View itemView = View.inflate(getContext(), R.layout.navigition_tab_layout, null);
                 RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.MATCH_PARENT);
@@ -686,8 +647,128 @@ public class EasyNavigitionBar extends LinearLayout {
     }
 
 
+    private void removeNavigationAllView() {
+
+        for (int i = 0; i < AddContainerLayout.getChildCount(); i++) {
+            if (AddContainerLayout.getChildAt(i).getTag() == null) {
+                AddContainerLayout.removeViewAt(i);
+            }
+        }
+
+        msgPointList.clear();
+        hintPointList.clear();
+        imageViewList.clear();
+        textViewList.clear();
+        tabList.clear();
+
+        navigitionLayout.removeAllViews();
+    }
+
+    private void addTabView(final int index) {
+        View itemView = View.inflate(getContext(), R.layout.navigition_tab_layout, null);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        params.width = NavigitionUtil.getScreenWidth(getContext()) / tabCount;
+
+        itemView.setLayoutParams(params);
+        itemView.setId(index);
+
+        TextView text = itemView.findViewById(R.id.tab_text_tv);
+        ImageView icon = itemView.findViewById(R.id.tab_icon_iv);
+        icon.setScaleType(scaleType);
+        LayoutParams iconParams = (LayoutParams) icon.getLayoutParams();
+        iconParams.width = (int) iconSize;
+        iconParams.height = (int) iconSize;
+        icon.setLayoutParams(iconParams);
+
+        imageViewList.add(icon);
+        textViewList.add(text);
+
+        if (mode == MODE_ADD) {
+            itemView.setOnClickListener(new OnClickListener() {
+                public void onClick(View view) {
+                    final int tabPosition = view.getId();
+                    if (onTabClickListener != null) {
+                        if (!onTabClickListener.onTabClickEvent(view, view.getId())) {
+
+                            if (tabPosition > tabCount / 2 && !addAsFragment) {
+                                mViewPager.setCurrentItem(tabPosition - 1, smoothScroll);
+                            } else {
+                                mViewPager.setCurrentItem(view.getId(), smoothScroll);
+                            }
+                        }
+                    } else {
+                        if (tabPosition > tabCount / 2 && !addAsFragment) {
+                            mViewPager.setCurrentItem(tabPosition - 1, smoothScroll);
+                        } else {
+                            mViewPager.setCurrentItem(view.getId(), smoothScroll);
+                        }
+                    }
+                }
+            });
+        } else if (mode == MODE_ADD_VIEW) {
+            itemView.setOnClickListener(new OnClickListener() {
+                public void onClick(View view) {
+                    final int tabPosition = view.getId();
+                    if (onTabClickListener != null) {
+                        if (!onTabClickListener.onTabClickEvent(view, index)) {
+
+                            if (index > tabCount / 2 && !addAsFragment) {
+                                mViewPager.setCurrentItem(tabPosition, smoothScroll);
+                            } else {
+                                mViewPager.setCurrentItem(index, smoothScroll);
+                            }
+                        }
+                    } else {
+                        if (index > tabCount / 2 && !addAsFragment) {
+                            mViewPager.setCurrentItem(tabPosition, smoothScroll);
+                        } else {
+                            mViewPager.setCurrentItem(index, smoothScroll);
+                        }
+                    }
+                }
+            });
+        }
+
+        LayoutParams textParams = (LayoutParams) text.getLayoutParams();
+        textParams.topMargin = (int) tabTextTop;
+        text.setLayoutParams(textParams);
+        text.setText(titleItems[index]);
+        text.setTextSize(NavigitionUtil.px2sp(getContext(), tabTextSize));
+
+
+        View hintPoint = itemView.findViewById(R.id.red_point);
+
+        //提示红点
+        RelativeLayout.LayoutParams hintPointParams = (RelativeLayout.LayoutParams) hintPoint.getLayoutParams();
+        hintPointParams.bottomMargin = (int) hintPointTop;
+        hintPointParams.width = (int) hintPointSize;
+        hintPointParams.height = (int) hintPointSize;
+        hintPointParams.leftMargin = (int) hintPointLeft;
+        hintPoint.setLayoutParams(hintPointParams);
+
+        //消息红点
+        TextView msgPoint = itemView.findViewById(R.id.msg_point_tv);
+        msgPoint.setTextSize(NavigitionUtil.px2sp(getContext(), msgPointTextSize));
+        RelativeLayout.LayoutParams msgPointParams = (RelativeLayout.LayoutParams) msgPoint.getLayoutParams();
+        msgPointParams.bottomMargin = (int) msgPointTop;
+        msgPointParams.width = (int) msgPointSize;
+        msgPointParams.height = (int) msgPointSize;
+        msgPointParams.leftMargin = (int) msgPointLeft;
+        msgPoint.setLayoutParams(msgPointParams);
+
+
+        hintPointList.add(hintPoint);
+        msgPointList.add(msgPoint);
+
+
+        tabList.add(itemView);
+        navigitionLayout.addView(itemView);
+    }
+
+
     //自定义中间按钮
     public void buildAddViewNavigition() {
+
         if ((titleItems.length != normalIconItems.length) || (titleItems.length != selectIconItems.length) || (normalIconItems.length != selectIconItems.length)) {
             Log.e("EasyNavigition", "请传入相同数量的Tab文字集合、未选中图标集合、选中图标集合");
             return;
@@ -709,42 +790,9 @@ public class EasyNavigitionBar extends LinearLayout {
             }
         }
 
+        removeNavigationAllView();
 
-        int index = 0;
-
-
-        hintPointList.clear();
-        hintPointList.clear();
-        imageViewList.clear();
-        textViewList.clear();
-        tabList.clear();
-        for (int i = 0; i < AddContainerLayout.getChildCount(); i++) {
-            if (AddContainerLayout.getChildAt(i).getTag() ==null) {
-                AddContainerLayout.removeViewAt(i);
-            }
-        }
-
-        navigitionLayout.removeAllViews();
-
-        adapter = new ViewPagerAdapter(fragmentManager, fragmentList);
-        mViewPager.setOffscreenPageLimit(3);
-        mViewPager.setAdapter(adapter);
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                select(position, true);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
+        setViewPagerAdapter();
 
         for (int i = 0; i < tabCount; i++) {
 
@@ -754,7 +802,6 @@ public class EasyNavigitionBar extends LinearLayout {
                 addItemParams.width = NavigitionUtil.getScreenWidth(getContext()) / tabCount;
                 addItemView.setLayoutParams(addItemParams);
                 navigitionLayout.addView(addItemView);
-
 
                 RelativeLayout.LayoutParams linearParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 //linearParams.width = NavigitionUtil.getScreenWidth(getContext()) / tabCount;
@@ -788,6 +835,7 @@ public class EasyNavigitionBar extends LinearLayout {
 
                 AddContainerLayout.addView(customAddView, linearParams);
             } else {
+                int index;
 
                 if (i > tabCount / 2) {
                     index = i - 1;
@@ -869,6 +917,7 @@ public class EasyNavigitionBar extends LinearLayout {
 
                 tabList.add(itemView);
                 navigitionLayout.addView(itemView);
+
             }
         }
 
@@ -1033,6 +1082,26 @@ public class EasyNavigitionBar extends LinearLayout {
             msgPointList.get(position).setText(count + "");
             msgPointList.get(position).setVisibility(VISIBLE);
         }
+    }
+
+    /**
+     * 清除数字消息
+     * @param position
+     */
+    public void clearMsgPoint(int position) {
+        if (msgPointList == null || msgPointList.size() < (position + 1))
+            return;
+        msgPointList.get(position).setVisibility(GONE);
+    }
+
+    /**
+     * 清除提示红点
+     * @param position
+     */
+    public void clearHintPoint(int position) {
+        if (hintPointList == null || hintPointList.size() < (position + 1))
+            return;
+        hintPointList.get(position).setVisibility(GONE);
     }
 
     /**
