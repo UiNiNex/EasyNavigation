@@ -15,7 +15,7 @@
 # 效果图
 
 ![image](https://github.com/forvv231/EasyNavigition/blob/master/screenshot/pre.gif)
-![image](https://github.com/forvv231/EasyNavigition/blob/master/screenshot/pre2.jpg)
+![image](https://github.com/forvv231/EasyNavigition/blob/master/screenshot/pre5.jpg)
 ![image](https://github.com/forvv231/EasyNavigition/blob/master/screenshot/pre3.jpg)
 ![image](https://github.com/forvv231/EasyNavigition/blob/master/screenshot/pre4.jpg)
 
