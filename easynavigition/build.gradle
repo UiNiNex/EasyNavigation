@@ -34,4 +34,5 @@ dependencies {
 
     implementation 'com.daimajia.easing:library:2.0@aar'
     implementation 'com.daimajia.androidanimations:library:2.2@aar'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
 }

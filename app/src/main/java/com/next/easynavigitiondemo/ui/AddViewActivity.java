@@ -55,6 +55,8 @@ public class AddViewActivity extends AppCompatActivity {
                 .addAsFragment(false)
                 .mode(EasyNavigitionBar.MODE_ADD_VIEW)
                 .addCustomView(view)
+                .addAlignBottom(false)
+                .addLayoutBottom(100)
                 .fragmentManager(getSupportFragmentManager())
                 .onTabClickListener(new EasyNavigitionBar.OnTabClickListener() {
                     @Override

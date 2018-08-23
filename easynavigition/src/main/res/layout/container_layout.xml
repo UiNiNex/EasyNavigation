@@ -10,7 +10,7 @@
         android:layout_height="match_parent"></com.next.easynavigition.view.CustomViewPager>
 
 
-    <RelativeLayout
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/add_rl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
             android:layout_above="@+id/navigition_ll"
             android:background="#f7f7f7" />
 
-    </RelativeLayout>
+    </android.support.constraint.ConstraintLayout>
 
     <LinearLayout
         android:id="@+id/add_view_ll"

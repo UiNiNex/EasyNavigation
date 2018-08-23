@@ -215,7 +215,7 @@ public class EasyNavigitionBar extends LinearLayout {
             msgPointLeft = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_msgPointLeft, -iconSize / 2);
             msgPointTextSize = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_msgPointTextSize, msgPointTextSize);
             addIconSize = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_addIconSize, addIconSize);
-            addLayoutBottom = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_addIconBottom, addLayoutBottom);
+            addLayoutBottom = attributes.getDimension(R.styleable.EasyNavigitionBar_Easy_addLayoutBottom, addLayoutBottom);
 
             //加号属性
             addSelectTextColor = attributes.getColor(R.styleable.EasyNavigitionBar_Easy_addSelectTextColor, addSelectTextColor);
