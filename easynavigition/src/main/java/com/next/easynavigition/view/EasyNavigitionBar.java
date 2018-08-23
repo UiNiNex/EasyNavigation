@@ -163,6 +163,7 @@ public class EasyNavigitionBar extends LinearLayout {
     //是否和其他tab文字底部对齐
     private boolean addAlignBottom = true;
     private ImageView addImage;
+    private View empty_line;
 
 
     public EasyNavigitionBar(Context context) {
@@ -182,10 +183,12 @@ public class EasyNavigitionBar extends LinearLayout {
         contentView = (RelativeLayout) View.inflate(context, R.layout.container_layout, null);
         addViewLayout = contentView.findViewById(R.id.add_view_ll);
         AddContainerLayout = contentView.findViewById(R.id.add_rl);
+        empty_line = contentView.findViewById(R.id.empty_line);
         navigitionLayout = contentView.findViewById(R.id.navigition_ll);
         mViewPager = contentView.findViewById(R.id.mViewPager);
         lineView = contentView.findViewById(R.id.common_horizontal_line);
         lineView.setTag(-100);
+        empty_line.setTag(-100);
         navigitionLayout.setTag(-100);
 
         toDp();
@@ -488,17 +491,6 @@ public class EasyNavigitionBar extends LinearLayout {
                 addItemView.setLayoutParams(addItemParams);
                 navigitionLayout.addView(addItemView);
 
-                RelativeLayout addLayout = new RelativeLayout(getContext());
-                RelativeLayout.LayoutParams addParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-                addParams.width = NavigitionUtil.getScreenWidth(getContext()) / tabCount;
-                if (addIconRule == RULE_CENTER) {
-                    addParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-                } else if (addIconRule == RULE_BOTTOM) {
-                    addParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-                    addParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                }
-
-
                 final LinearLayout addLinear = new LinearLayout(getContext());
                 addLinear.setOrientation(VERTICAL);
                 addLinear.setGravity(Gravity.CENTER);
@@ -526,21 +518,19 @@ public class EasyNavigitionBar extends LinearLayout {
                     linearParams.addRule(RelativeLayout.CENTER_IN_PARENT);
                 } else if (addIconRule == RULE_BOTTOM) {
                     linearParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-                    linearParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                    linearParams.addRule(RelativeLayout.ABOVE,R.id.empty_line);
                     if (addAlignBottom) {
                         if (textViewList != null && textViewList.size() > 0) {
                             textViewList.get(0).post(new Runnable() {
                                 @Override
                                 public void run() {
                                     linearParams.bottomMargin = (int) ((navigitionHeight - textViewList.get(0).getHeight() - iconSize - tabTextTop) / 2);
-                                    addLinear.setLayoutParams(linearParams);
                                 }
                             });
 
                         }
                     }else{
                         linearParams.bottomMargin = (int) addLayoutBottom;
-                        addLinear.setLayoutParams(linearParams);
                     }
                 }
 
@@ -572,8 +562,7 @@ public class EasyNavigitionBar extends LinearLayout {
 
                 tabList.add(addLinear);
 
-                addLayout.addView(addLinear, linearParams);
-                AddContainerLayout.addView(addLayout, addParams);
+                AddContainerLayout.addView(addLinear, linearParams);
             } else {
                 int index = i;
 
@@ -812,18 +801,29 @@ public class EasyNavigitionBar extends LinearLayout {
                 addItemView.setLayoutParams(addItemParams);
                 navigitionLayout.addView(addItemView);
 
-                RelativeLayout.LayoutParams linearParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                final RelativeLayout.LayoutParams linearParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 //linearParams.width = NavigitionUtil.getScreenWidth(getContext()) / tabCount;
 
                 if (addIconRule == RULE_CENTER) {
                     linearParams.addRule(RelativeLayout.CENTER_IN_PARENT);
                 } else if (addIconRule == RULE_BOTTOM) {
                     linearParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-                    linearParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                    linearParams.bottomMargin = (int) addLayoutBottom;
-                }
-                customAddView.setLayoutParams(linearParams);
+                    if (addAlignBottom) {
+                        linearParams.addRule(RelativeLayout.ABOVE,R.id.empty_line);
+                        if (textViewList != null && textViewList.size() > 0) {
+                            textViewList.get(0).post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    linearParams.bottomMargin = (int) ((navigitionHeight - textViewList.get(0).getHeight() - iconSize - tabTextTop) / 2);
+                                }
+                            });
 
+                        }
+                    }else{
+                        linearParams.addRule(RelativeLayout.ABOVE,R.id.empty_line);
+                        linearParams.bottomMargin = (int) addLayoutBottom;
+                    }
+                }
                 customAddView.setId(i);
                 customAddView.setOnClickListener(new OnClickListener() {
                     @Override
