@@ -41,8 +41,6 @@
 
         <!--中间图片的大小-->
         <attr name="Easy_addIconSize" format="dimension" />
-        <!--中间图片icon-->
-        <attr name="Easy_addIconRes" format="reference" />
         <!--底部导航栏和加号的高度  加号会居中-->
         <attr name="Easy_addLayoutHeight" format="dimension" />
         <!--添加按钮距离底部的距离-->
@@ -61,7 +59,7 @@
 
 
         <!--图标显示-->
-        <attr name="Easy_addIconRule">
+        <attr name="Easy_addLayoutRule">
             <flag name="RULE_CENTER" value="0" />
             <flag name="RULE_BOTTOM" value="1" />
         </attr>

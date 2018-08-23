@@ -1,14 +1,19 @@
 package com.next.easynavigitiondemo.ui;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.ImageView;
 
+import com.next.easynavigition.constant.Anim;
 import com.next.easynavigition.view.EasyNavigitionBar;
 import com.next.easynavigitiondemo.R;
 import com.next.easynavigitiondemo.ui.normal.AFragment;
 import com.next.easynavigitiondemo.ui.normal.BFragment;
 import com.next.easynavigitiondemo.ui.normal.CFragment;
 import com.next.easynavigitiondemo.ui.normal.DFragment;
+import com.next.easynavigitiondemo.ui.normal.EFragment;
 
 import java.util.ArrayList;
 import java.util.List;

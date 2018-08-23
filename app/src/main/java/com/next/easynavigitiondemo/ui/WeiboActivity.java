@@ -68,7 +68,7 @@ public class WeiboActivity extends AppCompatActivity {
                 .onTabClickListener(new EasyNavigitionBar.OnTabClickListener() {
                     @Override
                     public boolean onTabClickEvent(View view, int position) {
-                        if (position == 3) {
+                        if (position == 4) {
                             Toast.makeText(WeiboActivity.this, "请先登录", Toast.LENGTH_SHORT).show();
                             //return true则拦截事件、不进行页面切换
                             return true;

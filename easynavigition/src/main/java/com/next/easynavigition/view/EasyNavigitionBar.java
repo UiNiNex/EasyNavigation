@@ -135,7 +135,7 @@ public class EasyNavigitionBar extends LinearLayout {
 
     //RULE_CENTER 居中只需调节addLayoutHeight 默认和navigitionHeight相等 此时addLayoutBottom属性无效
     //RULE_BOTTOM addLayoutHeight属性无效、自适应、只需调节addLayoutBottom距底部的距离
-    private int addIconRule = RULE_CENTER;
+    private int addLayoutRule = RULE_BOTTOM;
 
     public static final int RULE_CENTER = 0;
     public static final int RULE_BOTTOM = 1;
@@ -256,7 +256,7 @@ public class EasyNavigitionBar extends LinearLayout {
                 scaleType = ImageView.ScaleType.MATRIX;
             }
 
-            addIconRule = attributes.getInt(R.styleable.EasyNavigitionBar_Easy_addIconRule, addIconRule);
+            addLayoutRule = attributes.getInt(R.styleable.EasyNavigitionBar_Easy_addLayoutRule, addLayoutRule);
             hasPadding = attributes.getBoolean(R.styleable.EasyNavigitionBar_Easy_hasPadding, hasPadding);
 
             addAsFragment = attributes.getBoolean(R.styleable.EasyNavigitionBar_Easy_addAsFragment, addAsFragment);
@@ -296,11 +296,11 @@ public class EasyNavigitionBar extends LinearLayout {
         if (addLayoutHeight < navigitionHeight + lineHeight)
             addLayoutHeight = navigitionHeight + lineHeight;
 
-        if (addIconRule == RULE_CENTER) {
+        if (addLayoutRule == RULE_CENTER) {
             RelativeLayout.LayoutParams addLayoutParams = (RelativeLayout.LayoutParams) AddContainerLayout.getLayoutParams();
             addLayoutParams.height = (int) addLayoutHeight;
             AddContainerLayout.setLayoutParams(addLayoutParams);
-        } else if (addIconRule == RULE_BOTTOM) {
+        } else if (addLayoutRule == RULE_BOTTOM) {
            /* RelativeLayout.LayoutParams addLayoutParams = (RelativeLayout.LayoutParams) AddContainerLayout.getLayoutParams();
             if ((addIconSize + addIconBottom) > (navigitionHeight + 1))
                 addLayoutParams.height = (int) (addIconSize + addIconBottom);
@@ -514,9 +514,9 @@ public class EasyNavigitionBar extends LinearLayout {
                 addText.setLayoutParams(addTextParams);
                 addText.setText(titleItems[i]);
 
-                if (addIconRule == RULE_CENTER) {
+                if (addLayoutRule == RULE_CENTER) {
                     linearParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-                } else if (addIconRule == RULE_BOTTOM) {
+                } else if (addLayoutRule == RULE_BOTTOM) {
                     linearParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
                     linearParams.addRule(RelativeLayout.ABOVE,R.id.empty_line);
                     if (addAlignBottom) {
@@ -804,9 +804,9 @@ public class EasyNavigitionBar extends LinearLayout {
                 final RelativeLayout.LayoutParams linearParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 //linearParams.width = NavigitionUtil.getScreenWidth(getContext()) / tabCount;
 
-                if (addIconRule == RULE_CENTER) {
+                if (addLayoutRule == RULE_CENTER) {
                     linearParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-                } else if (addIconRule == RULE_BOTTOM) {
+                } else if (addLayoutRule == RULE_BOTTOM) {
                     linearParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
                     if (addAlignBottom) {
                         linearParams.addRule(RelativeLayout.ABOVE,R.id.empty_line);
@@ -1280,8 +1280,8 @@ public class EasyNavigitionBar extends LinearLayout {
         return this;
     }
 
-    public EasyNavigitionBar addIconRule(int addIconRule) {
-        this.addIconRule = addIconRule;
+    public EasyNavigitionBar addLayoutRule(int addLayoutRule) {
+        this.addLayoutRule = addLayoutRule;
         return this;
     }
 
@@ -1494,8 +1494,8 @@ public class EasyNavigitionBar extends LinearLayout {
         return addLayoutBottom;
     }
 
-    public int getAddIconRule() {
-        return addIconRule;
+    public int getAddLayoutRule() {
+        return addLayoutRule;
     }
 
     public RelativeLayout getAddContainerLayout() {

@@ -6,7 +6,9 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
+import com.next.easynavigition.constant.Anim;
 import com.next.easynavigition.view.EasyNavigitionBar;
 import com.next.easynavigitiondemo.R;
 import com.next.easynavigitiondemo.ui.normal.AFragment;
@@ -31,7 +33,7 @@ public class AddAsFragmentActivity extends AppCompatActivity {
     private List<android.support.v4.app.Fragment> fragments = new ArrayList<>();
     private Handler mHandler = new Handler();
 
-    private boolean flag;
+    private boolean flag = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +52,7 @@ public class AddAsFragmentActivity extends AppCompatActivity {
                 .normalIconItems(normalIcon)
                 .selectIconItems(selectIcon)
                 .fragmentList(fragments)
+                .fragmentManager(getSupportFragmentManager())
                 .addAsFragment(true)
                 .onTabClickListener(new EasyNavigitionBar.OnTabClickListener() {
                     @Override
@@ -74,13 +77,7 @@ public class AddAsFragmentActivity extends AppCompatActivity {
                 })
                 .canScroll(true)
                 .mode(EasyNavigitionBar.MODE_ADD)
-                .fragmentManager(getSupportFragmentManager())
                 .build();
-
-    }
-
-    public EasyNavigitionBar getNavigitionBar() {
-        return navigitionBar;
     }
 
 }

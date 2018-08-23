@@ -9,7 +9,7 @@
         android:id="@+id/navigitionBar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:Easy_addIconRule="RULE_BOTTOM">
+        app:Easy_addLayoutRule="RULE_CENTER">
 
     </com.next.easynavigition.view.EasyNavigitionBar>
 

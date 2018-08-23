@@ -9,7 +9,6 @@
         android:layout_height="48dp"
         android:gravity="center"
         android:text="悟"
-        android:background="#ff0000"
         android:textColor="#333333"
         android:textSize="20sp"/>
 
