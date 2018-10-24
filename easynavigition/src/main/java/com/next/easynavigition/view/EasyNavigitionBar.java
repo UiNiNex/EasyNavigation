@@ -28,6 +28,7 @@ import com.next.easynavigition.utils.NavigitionUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Created by Jue on 2018/6/1.
@@ -79,7 +80,7 @@ public class EasyNavigitionBar extends LinearLayout {
     private FragmentManager fragmentManager;
 
     //Tab点击动画效果
-    private Techniques anim = Techniques.ZoomIn;
+    private Techniques anim = null;
     //ViewPager切换动画
     private boolean smoothScroll = false;
     //图标大小
@@ -496,7 +497,7 @@ public class EasyNavigitionBar extends LinearLayout {
                 addLinear.setGravity(Gravity.CENTER);
                 final RelativeLayout.LayoutParams linearParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-                 addImage = new ImageView(getContext());
+                addImage = new ImageView(getContext());
                 LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 imageParams.width = (int) addIconSize;
                 imageParams.height = (int) addIconSize;
@@ -518,18 +519,21 @@ public class EasyNavigitionBar extends LinearLayout {
                     linearParams.addRule(RelativeLayout.CENTER_IN_PARENT);
                 } else if (addLayoutRule == RULE_BOTTOM) {
                     linearParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-                    linearParams.addRule(RelativeLayout.ABOVE,R.id.empty_line);
+                    linearParams.addRule(RelativeLayout.ABOVE, R.id.empty_line);
                     if (addAlignBottom) {
                         if (textViewList != null && textViewList.size() > 0) {
                             textViewList.get(0).post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    linearParams.bottomMargin = (int) ((navigitionHeight - textViewList.get(0).getHeight() - iconSize - tabTextTop) / 2);
+                                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) empty_line.getLayoutParams();
+                                    params.height = (int) ((navigitionHeight - textViewList.get(0).getHeight() - iconSize - tabTextTop) / 2);
+                                    empty_line.setLayoutParams(params);
+                                    //linearParams.bottomMargin = (int) ((navigitionHeight - textViewList.get(0).getHeight() - iconSize - tabTextTop) / 2);
                                 }
                             });
 
                         }
-                    }else{
+                    } else {
                         linearParams.bottomMargin = (int) addLayoutBottom;
                     }
                 }
@@ -809,7 +813,7 @@ public class EasyNavigitionBar extends LinearLayout {
                 } else if (addLayoutRule == RULE_BOTTOM) {
                     linearParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
                     if (addAlignBottom) {
-                        linearParams.addRule(RelativeLayout.ABOVE,R.id.empty_line);
+                        linearParams.addRule(RelativeLayout.ABOVE, R.id.empty_line);
                         if (textViewList != null && textViewList.size() > 0) {
                             textViewList.get(0).post(new Runnable() {
                                 @Override
@@ -819,8 +823,8 @@ public class EasyNavigitionBar extends LinearLayout {
                             });
 
                         }
-                    }else{
-                        linearParams.addRule(RelativeLayout.ABOVE,R.id.empty_line);
+                    } else {
+                        linearParams.addRule(RelativeLayout.ABOVE, R.id.empty_line);
                         linearParams.bottomMargin = (int) addLayoutBottom;
                     }
                 }
@@ -1095,6 +1099,7 @@ public class EasyNavigitionBar extends LinearLayout {
 
     /**
      * 清除数字消息
+     *
      * @param position
      */
     public void clearMsgPoint(int position) {
@@ -1105,6 +1110,7 @@ public class EasyNavigitionBar extends LinearLayout {
 
     /**
      * 清除提示红点
+     *
      * @param position
      */
     public void clearHintPoint(int position) {
@@ -1276,7 +1282,11 @@ public class EasyNavigitionBar extends LinearLayout {
     }
 
     public EasyNavigitionBar anim(Anim anim) {
-        this.anim = anim.getYoyo();
+        if (anim != null) {
+            this.anim = anim.getYoyo();
+        }else{
+            this.anim = null;
+        }
         return this;
     }
 
@@ -1538,5 +1548,5 @@ public class EasyNavigitionBar extends LinearLayout {
         return addImage;
     }
 
-   // --addIconBottom
+    // --addIconBottom
 }

@@ -1,14 +1,12 @@
 package com.next.easynavigitiondemo.ui;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 
-import com.next.easynavigition.constant.Anim;
 import com.next.easynavigition.view.EasyNavigitionBar;
 import com.next.easynavigitiondemo.R;
 import com.next.easynavigitiondemo.ui.normal.AFragment;
@@ -30,7 +28,7 @@ public class AddAsFragmentActivity extends AppCompatActivity {
     //选中时icon
     private int[] selectIcon = {R.mipmap.index1, R.mipmap.find1, R.mipmap.add_image, R.mipmap.message1, R.mipmap.me1};
 
-    private List<android.support.v4.app.Fragment> fragments = new ArrayList<>();
+    private List<Fragment> fragments = new ArrayList<>();
     private Handler mHandler = new Handler();
 
     private boolean flag = true;
@@ -52,8 +50,9 @@ public class AddAsFragmentActivity extends AppCompatActivity {
                 .normalIconItems(normalIcon)
                 .selectIconItems(selectIcon)
                 .fragmentList(fragments)
+                .anim(null)
+                .addAlignBottom(true)
                 .fragmentManager(getSupportFragmentManager())
-                .addAsFragment(true)
                 .onTabClickListener(new EasyNavigitionBar.OnTabClickListener() {
                     @Override
                     public boolean onTabClickEvent(View view, int position) {

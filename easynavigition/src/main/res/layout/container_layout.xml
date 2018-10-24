@@ -35,6 +35,8 @@
             android:id="@+id/empty_line"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:clickable="false"
+            android:background="@android:color/transparent"
             android:layout_alignParentBottom="true" />
 
     </RelativeLayout>

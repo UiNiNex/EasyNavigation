@@ -11,7 +11,8 @@
         android:layout_height="match_parent"
         app:Easy_addIconSize="40dp"
         app:Easy_navigitionHeight="60dp"
-        app:Easy_addLayoutHeight="80dp"
+        app:Easy_addLayoutHeight="60dp"
+        app:Easy_addLayoutRule="RULE_CENTER"
         app:Easy_hasPadding="false"
         app:Easy_navigitionBackground="#90ffffff">
 
