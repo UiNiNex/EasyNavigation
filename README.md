@@ -37,10 +37,16 @@ Step 1. Add it in your root build.gradle at the end of repositories:
 ```
 Step 2. Add the dependency
 ```
-	 implementation 'com.github.forvv231:EasyNavigition:1.0.0'
+	 implementation 'com.github.forvv231:EasyNavigition:1.0.1'
 ```
 
 
+---
+# 更新（1.0.1）
+
+1、默认Tab点击改为无动画、或anim()中传入null设置为无动画；
+
+2、修复部分机型addAlignBottom属性失效问题；
 
 ---
 # 更新（1.0.0）
