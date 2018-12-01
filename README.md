@@ -14,13 +14,13 @@
 
 # 效果图
 
-![image](https://github.com/forvv231/EasyNavigition/blob/master/screenshot/pre.gif)
+![image](https://github.com/forvv231/EasyNavigation/blob/master/screenshot/pre.gif)
 
 
 
-![image](https://github.com/forvv231/EasyNavigition/blob/master/screenshot/pre5.jpg)
-![image](https://github.com/forvv231/EasyNavigition/blob/master/screenshot/pre3.jpg)
-![image](https://github.com/forvv231/EasyNavigition/blob/master/screenshot/pre4.jpg)
+![image](https://github.com/forvv231/EasyNavigation/blob/master/screenshot/pre5.jpg)
+![image](https://github.com/forvv231/EasyNavigation/blob/master/screenshot/pre3.jpg)
+![image](https://github.com/forvv231/EasyNavigation/blob/master/screenshot/pre4.jpg)
 
 
 # 实现
@@ -37,7 +37,7 @@ Step 1. Add it in your root build.gradle at the end of repositories:
 ```
 Step 2. Add the dependency
 ```
-	 implementation 'com.github.forvv231:EasyNavigition:1.0.1'
+	 implementation 'com.github.forvv231:EasyNavigation:1.0.1'
 ```
 
 
@@ -76,7 +76,7 @@ Step 2. Add the dependency
 
 ---
 # Demo
-github：[https://github.com/forvv231/EasyNavigition](https://github.com/forvv231/EasyNavigition)
+github：[https://github.com/forvv231/EasyNavigation](https://github.com/forvv231/EasyNavigation)
 
 apk：[ https://fir.im/7r4d]( https://fir.im/7r4d)
 
