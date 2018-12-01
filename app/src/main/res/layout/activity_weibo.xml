@@ -5,17 +5,15 @@
     android:layout_height="match_parent">
 
 
-    <com.next.easynavigition.view.EasyNavigitionBar
-        android:id="@+id/navigitionBar"
+    <com.next.easynavigation.view.EasyNavigationBar
+        android:id="@+id/navigationBar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:Easy_addIconSize="40dp"
-        app:Easy_navigitionHeight="60dp"
-        app:Easy_addLayoutHeight="60dp"
-        app:Easy_addLayoutRule="RULE_CENTER"
+        app:Easy_navigationHeight="60dp"
         app:Easy_hasPadding="false"
-        app:Easy_navigitionBackground="#90ffffff">
+        app:Easy_navigationBackground="#90ffffff">
 
-    </com.next.easynavigition.view.EasyNavigitionBar>
+    </com.next.easynavigation.view.EasyNavigationBar>
 
 </android.support.constraint.ConstraintLayout>

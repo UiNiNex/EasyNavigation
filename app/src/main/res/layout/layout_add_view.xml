@@ -69,7 +69,7 @@
             android:id="@+id/common_horizontal_line"
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:layout_above="@+id/navigition_ll"
+            android:layout_above="@+id/navigation_ll"
             android:background="#f7f7f7" />
 
         <ImageView
