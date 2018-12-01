@@ -40,6 +40,11 @@ Step 2. Add the dependency
 	 implementation 'com.github.forvv231:EasyNavigation:1.0.1'
 ```
 
+---
+# 更新（1.0.2）
+
+1、修改navigition为navigation；
+
 
 ---
 # 更新（1.0.1）
